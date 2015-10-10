@@ -8,6 +8,33 @@
     <script src="bower_components/dojo/dojo.js"></script>
 
     <script>
+        require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
+                    "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
+                    "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/ready"],
+                function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, ready){
+                    ready(function(){
+                        var chartTwo = new Chart("chartTwo");
+                        chartTwo.setTheme(MiamiNice)
+                                .addPlot("default", {
+                                    type: Pie,
+                                    font: "normal normal 11pt Tahoma",
+                                    fontColor: "black",
+                                    labelOffset: -30,
+                                    radius: 80
+                                }).addSeries("Series A", [
+                                    {y: 4, text: "Red",   stroke: "black", tooltip: "Red is 50%"},
+                                    {y: 2, text: "Green", stroke: "black", tooltip: "Green is 25%"},
+                                    {y: 1, text: "Blue",  stroke: "black", tooltip: "I am feeling Blue!"},
+                                    {y: 1, text: "Other", stroke: "black", tooltip: "Mighty <strong>strong</strong><br>With two lines!"}
+                                ]);
+                        var anim_a = new MoveSlice(chartTwo, "default");
+                        var anim_b = new Highlight(chartTwo, "default");
+                        var anim_c = new Tooltip(chartTwo, "default");
+                        chartTwo.render();
+                        var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
+                    });
+                });
+
         require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland" , "dojo/ready"],
                 function(Chart, Default, StackedAreas, Wetland, ready){
                     ready(function(){
@@ -22,9 +49,96 @@
                                 .render();
                     });
                 });
+
+        require(["dojox/charting/Chart2D",
+                    "dojox/charting/plot2d/Columns",
+                    "dojox/charting/themes/Wetland",
+                    "dojox/charting/action2d/Highlight",
+                    "dojox/charting/action2d/Tooltip",
+                    "dojox/charting/themes/CubanShirts",
+                    "dojox/charting/widget/SelectableLegend",
+                    "dojox/charting/widget/Legend",
+                    "dojo/ready"],
+
+                function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
+                    ready(function () {
+                        var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
+                        c.addPlot("default", {
+                            type: "Columns",
+                            tension: 3,
+                            gap: 10
+                        });
+                        c.addAxis("x", {
+                            labels: [{
+                                value: 1,
+                                text: "Larger Bar"
+                            }, {
+                                value: 2,
+                                text: "Splited Bar"
+                            }],
+                            fixLower: "major",
+                            fixUpper: "major"
+                        });
+                        c.addAxis("y", {
+                            vertical: true,
+                            fixLower: "major",
+                            fixUpper: "major",
+                            min: 0
+                        });
+                        c.setTheme(dojox.charting.themes.Wetland);
+                        c.addSeries("Splited 1", [{
+                            x: 1,
+                            y: 0
+                        }, {
+                            y: 100,
+                            x: 2,
+                            tooltip: "Splited 1 ",
+                            text: "Splited 1"
+                        }], {
+                            stroke: {
+                                color: "red",
+                                width: 2
+                            },
+                            fill: "orange"
+                        });
+                        c.addSeries("Larger", [{
+                            y: 1000,
+                            x: 1,
+                            tooltip: "Larger",
+                            text: "Larger",
+                            stroke: {
+                                color: "blue",
+                                width: 2
+                            },
+                            fill: "lightblue"
+                        }, ]);
+                        c.addSeries("Splited 2", [{
+                            x: 1,
+                            y: 1
+                        }, {
+
+                            y: 300,
+                            x: 2,
+                            tooltip: "Splited 2",
+                            text: "Splited 2",
+                            color: "lightgreen",
+                            stroke: {
+                                color: "green",
+                                width: 2
+                            }
+                        }]);
+                        var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+                        var a2 = new dojox.charting.action2d.Highlight(c, "default");
+                        c.render();
+                    });
+                });
     </script>
 </head>
 <body class="claro">
-<div id="chartOne" style="width: 400px; height: 240px; margin: 10px auto 0px auto;"></div>
+<div id="chartOne" style="width: 400px; height: 240px;"></div>
+<div id="chartTwo" style="width: 400px; height: 300px;"></div>
+<div id="legendTwo"></div>
+<div id="reportTotalsChartDiv" style='display:block; clear:none; z-index:999;width: 400px; height: 300px;'></div>
+<div id='reportTotalsLegendDiv'></div>
 </body>
 </html>
