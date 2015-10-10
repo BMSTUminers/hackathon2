@@ -136,4 +136,9 @@ public class DatasetService {
         dataset.setPage(page);
         return dataset;
     }
+
+    public DatasetInfo update(String id, DatasetInfo info) {
+        info.setId(id);
+        return repository.save(info);
+    }
 }

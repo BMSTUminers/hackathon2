@@ -11,7 +11,8 @@
 		"242045fa-775c-84c8-dec6-019b4fe4ac69",
 		"e8249899-a79b-9095-0c22-aa634be00920",
 		"73f1c73b-dd3f-81e1-918c-f5e3e194a93d",
-		"63023535-7603-95ed-5a4d-0455335ec795"
+		"63023535-7603-95ed-5a4d-0455335ec795",
+		"68c1023d-c108-220d-64b1-b36cbc1b66f6"
 	],
 	"folders": [],
 	"timestamp": 1444479457927,
@@ -79,6 +80,27 @@
 			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {}
+		},
+		{
+			"id": "68c1023d-c108-220d-64b1-b36cbc1b66f6",
+			"headers": "Content-Type: application/json\n",
+			"url": "http://sandbox.icebreakerq.com:8081/api/dataset/56193f72e4b04db6b6234084/update",
+			"pathVariables": {},
+			"preRequestScript": "",
+			"method": "POST",
+			"collectionId": "49773acd-664c-ccd5-5daa-f36693983e46",
+			"data": [],
+			"dataMode": "raw",
+			"name": "update dataset",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1444502110972,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": "{\n    \"category\": \"категория\",\n    \"name\": \"Метеорологические наблюдения\",\n    \"description\": \"Данные приземных метеорологических наблюдений\",\n    \"fields\": [\n      \"Nameagency\",\n      \"Year\",\n      \"Month\",\n      \"RusFedsub\",\n      \"Avtemp\",\n      \"Rainfall\"\n    ]\n  }"
 		},
 		{
 			"id": "73f1c73b-dd3f-81e1-918c-f5e3e194a93d",
