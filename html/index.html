@@ -4,7 +4,82 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body>
+<body class="claro">
+
+
+<link rel="stylesheet" href="bower_components/dijit/themes/claro/claro.css">
+
+<script>dojoConfig = {parseOnLoad: true}</script>
+<script src="bower_components/dojo/dojo.js"></script>
+
+<script>
+
+    dataset_ex = [
+        {
+            "id": "adbfdsd24324dsbfbf",
+            "name": "Гисметео",
+            "description": "описание набора",
+            "fields": [
+                "название поля 1",
+                "название поля 2",
+                "название поля n"
+            ]
+        },
+        {
+            "id": "adbfdsd24324dsbf3243",
+            "name": "ЖКХ",
+            "description": "описание набора",
+            "fields": [
+                "название поля 1",
+                "название поля 2",
+                "название поля n"
+            ]
+        }
+    ];
+
+    require([
+                "dijit/Menu",
+                "dijit/MenuItem",
+                "dijit/form/ComboButton",
+                "dojo/domReady!"
+            ],
+
+            function (Menu, MenuItem, ComboButton) {
+                var menu = new Menu({style: "display: none;"});
+
+
+                var options = ['el1', 'el2'];
+                console.log(dataset_ex);
+                dataset_ex.forEach(function (entry) {
+                    console.log(entry.name);
+                    var menuItem = new MenuItem({
+                        label: entry.name,
+                        onClick: function () {
+                            alert('hi');
+                        }
+                    });
+                    menu.addChild(menuItem);
+
+                });
+
+
+
+
+                menu.startup();
+
+                var button = new ComboButton({
+                    label: "Выберите исходные данные",
+                    dropDown: menu
+                });
+                button.placeAt(dojo.body());
+                button.startup();
+            });
+
+
+</script>
+
+
+
 
 </body>
 </html>
