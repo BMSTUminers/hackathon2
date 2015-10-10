@@ -16,10 +16,19 @@ public class DatasetInfo {
     private String id;
     @Indexed
     private String category;
+    private String name;
     private String description;
     private List<String> fields;
 
     public DatasetInfo() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {

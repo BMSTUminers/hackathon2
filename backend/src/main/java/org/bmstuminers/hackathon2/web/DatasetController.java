@@ -40,6 +40,17 @@ public class DatasetController {
     }
 
     /**
+     * Creates a new dataset
+     * @param info dataset info
+     * @return saved dataset
+     */
+    @RequestMapping(value = "/{id}/update", method = RequestMethod.POST, produces = "application/json")
+    public DatasetInfo update(@PathVariable String id,
+                              @RequestBody DatasetInfo info) {
+        return this.datasetService.update(id, info);
+    }
+
+    /**
      * Gets list of all dataset categories
      * @return categories
      */

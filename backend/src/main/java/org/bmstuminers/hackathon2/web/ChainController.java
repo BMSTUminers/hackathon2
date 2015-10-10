@@ -81,8 +81,8 @@ public class ChainController {
                            @RequestParam(required = false) Integer pageSize)
             throws WrongParameterException, ProcessingException {
 
-        if (page == null) page = -1;
-        if (pageSize == null) pageSize = 10;
+        if (page == null) page = 0;
+        if (pageSize == null) pageSize = Integer.MAX_VALUE;
         return this.chainService.execute(id, page, pageSize);
     }
 }
