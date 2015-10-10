@@ -50,7 +50,8 @@ public abstract class AbstractBlock implements Block {
      * @param params params map
      * @throws WrongParameterException if wrong parameters map is given
      */
-    protected void checkParams(Map<String, String> params) throws WrongParameterException {
+    @Override
+    public void checkParams(Map<String, String> params) throws WrongParameterException {
         for (ParameterDescription description: getParamsDescription()) {
             if (!params.containsKey(description.getName())) {
                 if (description.isOptional()) {

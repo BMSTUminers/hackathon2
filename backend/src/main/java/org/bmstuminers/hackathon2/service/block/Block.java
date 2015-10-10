@@ -26,6 +26,14 @@ public interface Block {
             throws WrongParameterException, ProcessingException;
 
     /**
+     * Method checks parameter map to make sure all required params are present.
+     * For missed optional params method should add the default values into the map
+     * @param params params map
+     * @throws WrongParameterException if wrong parameters map is given
+     */
+    void checkParams(Map<String, String> params) throws WrongParameterException;
+
+    /**
      * @return block name. Will be used in api to construct the chain
      */
     String getName();
