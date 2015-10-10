@@ -8,3 +8,5 @@ HOW to run (on linux):
 2. cd backend
 
 3. mvn spring-boot:run
+
+Or just use [postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en)
