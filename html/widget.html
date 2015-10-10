@@ -6,6 +6,52 @@
 
     <script>dojoConfig = {parseOnLoad: true}</script>
     <script src="bower_components/dojo/dojo.js"></script>
+    <script>
+        require([
+            "dojo/io-query",
+        ], function (ioQuery) {
+            GET = ioQuery.queryToObject(decodeURIComponent(dojo.doc.location.search.slice(1)));
+            console.log(GET);
+        });
+    </script>
+    <script>
+        require(["dojo/dom", "dojo/request", "dojo/json",
+                    "dojo/_base/array", "dojo/domReady!"],
+                function(dom, request, JSON, array){
+                    // Results will be displayed in resultDiv
+                    var resultDiv = dom.byId("resultDiv");
+
+                    // Request the JSON data from the server
+                    request.get("test_data/tarifs.json", {
+                        // Parse data from JSON to a JavaScript object
+                        handleAs: "json"
+                    }).then(function(data){
+                                // Display the data sent from the server
+                                var html = "<h2>JSON Data</h2>" +
+                                        "<p>JSON encoded data:</p>" +
+                                        "<p><code>" + JSON.stringify(data) + "</code></p>"+
+                                        "<h3>Accessing the JSON data</h3>" +
+                                        "<p><strong>title</strong> " + data.title + "</p>" +
+                                        "<p><strong>items</strong> An array of items." +
+                                        "Each item has a name and a value.  The type of " +
+                                        "the value is shown in parentheses.</p><dl>";
+
+                                array.forEach(data.items, function(item,i){
+                                    html += "<dt>" + item.name +
+                                            "</dt><dd>" + item.value +
+                                            " (" + (typeof item.value) + ")</dd>";
+                                });
+                                html += "</dl>";
+
+                                resultDiv.innerHTML = html;
+                            },
+                            function(error){
+                                // Display the error returned
+                                resultDiv.innerHTML = error;
+                            });
+                }
+        );
+    </script>
 
     <script>
         require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
@@ -140,5 +186,6 @@
 <div id="legendTwo"></div>
 <div id="reportTotalsChartDiv" style='display:block; clear:none; z-index:999;width: 400px; height: 300px;'></div>
 <div id='reportTotalsLegendDiv'></div>
+<div id="resultDiv"></div>
 </body>
 </html>
