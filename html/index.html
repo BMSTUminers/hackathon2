@@ -57,7 +57,9 @@
 
                 function get_all_sets (request) {
                     request.post("http://sandbox.icebreakerq.com:8081/api/dataset/", {
-                        data: {category: 'null'},
+//                        data: '{}',
+                        
+                        data: JSON.stringify({category: null}),
                         headers: {
                             "Content-Type": "application/json"
                         }
