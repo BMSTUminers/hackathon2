@@ -1,0 +1,15 @@
+doc/**/*.aux
+doc/**/*.log
+doc/**/*.out
+doc/**/*.gz
+doc/**/*.toc
+target/
+src/test/cucumber/Gemfile.lock
+src/test/cucumber/report/
+.settings
+.classpath
+.project
+*.log
+.idea
+*.iml
+
