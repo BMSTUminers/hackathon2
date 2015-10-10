@@ -1,0 +1,35 @@
+{
+	"id": "a3aeef37-00a9-c06e-c372-5bec3d2db0a0",
+	"name": "Chains",
+	"description": "",
+	"order": [
+		"e11b3fa1-9b1c-5f89-ad8a-679429566373"
+	],
+	"folders": [],
+	"timestamp": 1444488645617,
+	"owner": 0,
+	"remoteLink": "",
+	"public": false,
+	"requests": [
+		{
+			"id": "e11b3fa1-9b1c-5f89-ad8a-679429566373",
+			"headers": "Content-Type: application/json\n",
+			"url": "http://sandbox.icebreakerq.com:8081/api/chain/blocks",
+			"pathVariables": {},
+			"preRequestScript": "",
+			"method": "GET",
+			"collectionId": "a3aeef37-00a9-c06e-c372-5bec3d2db0a0",
+			"data": [],
+			"dataMode": "params",
+			"name": "All blocks",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1444488714779,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		}
+	]
+}
