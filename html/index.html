@@ -38,24 +38,43 @@
     ];
 
     require([
+
                 "dijit/Menu",
                 "dijit/MenuItem",
                 "dijit/form/ComboButton",
-                "dojo/domReady!"
+                "dojo/dom-construct",
+                "dojo/_base/array",
+                "dojo/domReady!",
+                "dojo/_base/window",
+                    "dojo/request"
             ],
 
-            function (Menu, MenuItem, ComboButton) {
+            function (Menu, MenuItem, ComboButton, domConstruct, array, domReady, window, request) {
                 var menu = new Menu({style: "display: none;"});
 
 
-                var options = ['el1', 'el2'];
                 console.log(dataset_ex);
+
+                function get_all_sets (request) {
+                    request.post("http://sandbox.icebreakerq.com:8081/api/dataset/", {
+                        data: {category: 'null'},
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then(function (text) {
+                        console.log("The server returned: ", text);
+                    });
+                }
+                var k = get_all_sets(request);
+                console.log(k);
+
                 dataset_ex.forEach(function (entry) {
                     console.log(entry.name);
                     var menuItem = new MenuItem({
                         label: entry.name,
                         onClick: function () {
-                            alert('hi');
+                            console.log(dataset_ex.indexOf(entry));
+                            listColumns(dataset_ex.indexOf(entry));
                         }
                     });
                     menu.addChild(menuItem);
@@ -72,13 +91,62 @@
                     dropDown: menu
                 });
                 button.placeAt(dojo.body());
+
                 button.startup();
+
+                function listColumns(index) {
+                    console.log(dataset_ex[index].fields);
+                    var node = domConstruct.create("div");
+//                    domConstruct.create("form", "",   "unodered_list");
+                    domConstruct.create("form");
+                    dataset_ex[index].fields.forEach(function (field) {
+
+                        console.log(field);
+                        domConstruct.create("span",
+                                {innerHTML: '<ul>' + '<input type="checkbox" name="field">'
+                                + field + "</ul>"
+
+                                },
+                                "myForm");
+//                        var n = domConstruct.create("div", {innerHTML: "<p>hi</p>"});
+//                        domConstruct.create("p", {interHTML: '<input type="checkbox" name="field">"}, "unordered_list");
+                    });
+
+                }
             });
 
 
 </script>
 
+<div data-dojo-type="dijit/form/Form" id="myForm" data-dojo-id="myForm"
+     encType="multipart/form-data" action="" method="">
+<table style="border: 1px solid #9f9f9f;" cellspacing="10">
+    <tr>
+        <td>
+            <label for="name">Name:</label>
+        </td>
+        <td>
+            <input type="text" id="name" name="name" required="true" data-dojo-type="dijit/form/ValidationTextBox"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="dob23">Date of birth:</label>
+        </td>
+        <td>
+            <input type="text" id="dob23" name="dob31" data-dojo-type="dijit/form/DateTextBox"/>
+        </td>
+    </tr>
+</table>
+<button data-dojo-type="dijit/form/Button" type="button" onClick="console.log(myForm.getValues())">Get Values from form!</button>
+<button data-dojo-type="dijit/form/Button" type="submit" name="submitButton" value="Submit">Submit</button>
+</div>
 
+
+<div id="button"></div>
+<div id="unordered_list" >
+
+</div>
 
 
 </body>
