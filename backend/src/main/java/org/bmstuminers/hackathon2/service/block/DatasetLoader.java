@@ -44,7 +44,7 @@ public class DatasetLoader extends AbstractBlock {
     protected Dataset doProcess(Dataset input, Map<String, String> params) throws ProcessingException {
         Dataset dataset;
         try {
-            dataset = datasetService.getData(params.get(params.get(DATA_SOURCE_ID)));
+            dataset = datasetService.getData(params.get(DATA_SOURCE_ID));
         } catch (IllegalArgumentException e) {
             throw new ProcessingException("Error during dataset loading", e);
         }
@@ -67,8 +67,8 @@ public class DatasetLoader extends AbstractBlock {
         }
 
         Dataset filtered = new Dataset();
-        dataset.setFields(Arrays.asList(columns));
-        dataset.setPage(filteredPage);
+        filtered.setFields(Arrays.asList(columns));
+        filtered.setPage(filteredPage);
 
         return filtered;
     }
