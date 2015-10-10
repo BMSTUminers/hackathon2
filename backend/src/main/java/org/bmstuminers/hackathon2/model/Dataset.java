@@ -8,7 +8,7 @@ import java.util.List;
 public class Dataset {
 
     private List<String> fields;
-    private List<List<String>> page;
+    private Iterable<List<String>> page;
 
     public List<String> getFields() {
         return fields;
@@ -18,11 +18,11 @@ public class Dataset {
         this.fields = fields;
     }
 
-    public List<List<String>> getPage() {
+    public Iterable<List<String>> getPage() {
         return page;
     }
 
-    public void setPage(List<List<String>> page) {
+    public void setPage(Iterable<List<String>> page) {
         this.page = page;
     }
 }
