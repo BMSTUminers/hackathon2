@@ -6,6 +6,7 @@ import org.bmstuminers.hackathon2.model.*;
 import org.bmstuminers.hackathon2.repo.CachedDatasetLineRepository;
 import org.bmstuminers.hackathon2.repo.CachedDatasetRepository;
 import org.bmstuminers.hackathon2.repo.ChainRepository;
+import org.bmstuminers.hackathon2.service.block.AverageLoader;
 import org.bmstuminers.hackathon2.service.block.Block;
 import org.bmstuminers.hackathon2.service.block.DatasetLoader;
 import org.bson.types.ObjectId;
@@ -47,6 +48,7 @@ public class ChainService {
         this.cachedDatasetRepository = cachedDatasetRepository;
 
         availableBlocks.add(new DatasetLoader(this.datasetService));
+        availableBlocks.add(new AverageLoader(this.datasetService));
     }
 
     public List<Block> getAvailableBlocks() {

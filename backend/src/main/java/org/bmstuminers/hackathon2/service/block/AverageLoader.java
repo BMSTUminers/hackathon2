@@ -41,47 +41,105 @@ public class AverageLoader extends AbstractBlock {
     @Override
     protected Dataset doProcess(Dataset input, Map<String, String> params) throws ProcessingException {
 
-        int ave_column;
+        String[] columns_ave;
+        int[] columnIds_ave;
         try {
-            ave_column = findByName(input.getFields(), params.get(COLUMNS));
+
+            String columns_ave_str = params.get(COLUMNS);
+
+            columns_ave = columns_ave_str.split(",");
+
+            columnIds_ave = new int[columns_ave.length];
+            for (int i = 0; i<columns_ave.length; i++) {
+                columnIds_ave[i] = findByName(input.getFields(), columns_ave[i]);
+            }
         } catch (IllegalArgumentException e) {
             throw new ProcessingException("Error during dataset loading", e);
         }
         String groupFieldsData = params.get(GROUP_BY);
 
-        String[] columns = groupFieldsData.split(",");
-        int[] columnIds = new int[columns.length];
-        for (int i = 0; i<columns.length; i++) {
-            columnIds[i] = findByName(input.getFields(), columns[i]);
+        String[] columns_group = {};
+        int[] columnIds_group = {};
+
+        if (!groupFieldsData.isEmpty()) {
+            columns_group = groupFieldsData.split(",");
+            columnIds_group = new int[columns_group.length];
+
+            for (int i = 0; i < columns_group.length; i++) {
+                columnIds_group[i] = findByName(input.getFields(), columns_group[i]);
+            }
         }
 
         String key_separator = "___";
 
-        Map<String, Double> aves = new HashMap<>();
-        Map<String, Integer> counts = new HashMap<>();
+        Map<String, Map<String, Double> > aves_map = new HashMap<>();
+        Map<String, Map<String, Integer> > counts_map = new HashMap<>();
 
+        /*
+        for(String ave_col: columns_ave){
+            aves_map.put(ave_col, new HashMap<>());
+            counts_map.put(ave_col, new HashMap<>());
+        }*/
+
+        /*
+        val1___val2 --> sum1 - > \Sigma
+                        sum2 - > \Sigma
+         */
 
         for (List<String> row: input.getPage()) {
+            // 1 row of data, obtain by ID
             String key = "";
-            for (int index: columnIds) {
+            for (int index: columnIds_group) {
                 key += key_separator + row.get(index);
             }
-            Double val = Double.parseDouble(row.get(ave_column));
-            if(aves.containsKey(key))
-            {
-                aves.put( key, aves.get(key) + val );
-                counts.put(key, counts.get(key) + 1);
-            }else{
-                aves.put(key, val);
-                counts.put(key, 1);
+            if (!aves_map.containsKey(key)) {
+                aves_map.put(key, new HashMap<>());
+                counts_map.put(key, new HashMap<>());
+            }
+            for(int i = 0; i < columns_ave.length; i++) {
+                // columns need to be calc:
+                int col_id = columnIds_ave[i];
+                String col_name = columns_ave[i];
+
+
+                Map<String, Double> aves = aves_map.get(key);
+                Map<String, Integer> counts = counts_map.get(key);
+
+                Double val = Double.parseDouble(row.get(col_id));
+                if (aves.containsKey(col_name)) {
+                    aves.put(col_name, aves.get(col_name) + val);
+                    counts.put(col_name, counts.get(col_name) + 1);
+                } else {
+                    aves.put(col_name, val);
+                    counts.put(col_name, 1);
+                }
             }
         }
 
+        Dataset counted = new Dataset();
 
-        Dataset filtered = new Dataset();
-        filtered.setFields(Arrays.asList(columns));
+        ArrayList<String> res_fields = new ArrayList<>(Arrays.asList(columns_group));
+        res_fields.addAll(Arrays.asList(columns_ave));
+        counted.setFields(res_fields);
 
-        return filtered;
+        List<List<String>> countedPage = new ArrayList<>();
+        for(String key: aves_map.keySet()){
+            List<String> countedRow = new ArrayList<>();
+            String[] values = key.split(key_separator);
+            for(int idx = 1; idx < values.length; idx++){
+                // values[0] = always empty string
+                countedRow.add(values[idx]);
+            }
+            Map<String, Double> aves = aves_map.get(key);
+            Map<String, Integer> counts = counts_map.get(key);
+            for(String count_col: aves.keySet()){
+                countedRow.add( Double.toString( aves.get(count_col) / counts.get(count_col)) );
+            }
+            countedPage.add(countedRow);
+        }
+        counted.setPage(countedPage);
+
+        return counted;
     }
 
     @Override
