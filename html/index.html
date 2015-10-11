@@ -8,6 +8,7 @@
 
 
 <link rel="stylesheet" href="bower_components/dijit/themes/claro/claro.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 <script>dojoConfig = {parseOnLoad: true}</script>
 <script src="bower_components/dojo/dojo.js"></script>
@@ -20,37 +21,110 @@
         var form = document.getElementById("myList");
         var uls = form.children;
         var column_set = [];
+        var filter_set = [];
+        var column_indexes = [];
         for(i = 0; i < uls.length; i++) {
             if (uls[i].firstChild.checked) {
-//                column_set.push(uls[i].firstChild);
-                column_set.push(i)
+                column_indexes.push(dataset_ex[document.choosenIndex].fields.length - i - 1);
+                column_set.push(uls[i].innerText);
+                filter_set.push(uls[i].children[1].value);
             }
         }
         console.log(column_set);
+        console.log(column_indexes);
+        console.log(filter_set);
+
+        string_of_columns = "";
+        column_set.forEach(function(entry){
+            string_of_columns += entry +",";
+        });
+
+        string_of_columns = string_of_columns.substring(0, string_of_columns.length - 1);
+
+        console.log(string_of_columns);
+        console.log(dataset_ex[document.choosenIndex].id);
+        var params_kv = {};
+
+        for (var i = 0; i < column_indexes.length; i++) {
+//            params_kv[column_indexes[i]] = filter_set[i];
+            if (filter_set[i] != ""){
+            params_kv[[i]] = filter_set[i];
+            }
+        }
+
+//        console.log(params_list);
+
+//            Filter test
+//        "params": params_kv
+
+        var jsonToCreateChain = [{
+            "name": "loader",
+            "params": {
+                "datasourceId": dataset_ex[document.choosenIndex].id,
+                "columns": string_of_columns
+            }
+        }];
+        console.log(jsonToCreateChain);
+
+
+
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange=function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                console.log ("POST SEND, chain created");
+                console.log(xhttp.responseText);
+                document.result  = JSON.parse(xhttp.responseText);
+
+
+                var a = document.createElement('a');
+                var linkText = document.createTextNode("my title text");
+                a.appendChild(linkText);
+                a.title = "Предпросмотр Виджета";
+                a.href = "http://localhost:63342/hackathon2/html/widget.html?id=" + document.result.id;
+                document.body.appendChild(a);
+
+            }
+        };
+        xhttp.open("POST", "http://sandbox.icebreakerq.com:8081/api/chain/create", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(JSON.stringify(jsonToCreateChain));
+
+
     }
 
-    dataset_ex = [
-        {
-            "id": "adbfdsd24324dsbfbf",
-            "name": "Гисметео",
-            "description": "описание набора",
-            "fields": [
-                "названиеполя 1",
-                "названиеполя 2",
-                "названиеполя n"
-            ]
-        },
-        {
-            "id": "adbfdsd24324dsbf3243",
-            "name": "ЖКХ",
-            "description": "описание набора",
-            "fields": [
-                "название поля 1",
-                "название поля 2",
-                "название поля n"
-            ]
-        }
-    ];
+
+    dataset_ex = [{
+        "id": "56193f72e4b04db6b6234084",
+        "category": "категория",
+        "name": "Метеорологические наблюдения",
+        "description": "Данные приземных метеорологических наблюдений",
+        "fields": ["Nameagency", "Year", "Month", "RusFedsub", "Avtemp", "Rainfall"]
+    }, {
+        "id": "561955a5e4b04db6b62340ed",
+        "category": "категория",
+        "name": "Гисметео сводка",
+        "description": "Данные приземных метеорологических наблюдений",
+        "fields": ["Nameagency", "Year", "Month", "RusFedsub", "Avtemp", "Rainfall"]
+    }, {
+        "id": "561a21b6e4b085dd1f6b04c7",
+        "category": "категория",
+        "name": "эконом",
+        "description": "Основные показатели социально-экономического развития России (по кварталам)",
+        "fields": ["created", "source", "source_id", "provenance", "format", "updated"]
+    }, {
+        "id": "561a240be4b085dd1f6b04c8",
+        "category": "категория",
+        "name": "эконом",
+        "description": "Основные показатели социально-экономического развития России (по кварталам)",
+        "fields": ["Показатель", "I квартал 2012", "II квартал 2012", "III квартал 2012", "IV квартал 2012", "2012 год всего", "I квартал 2013", "II квартал 2013"]
+    }, {
+        "id": "561a298de4b085dd1f6b055e",
+        "category": "категория",
+        "name": "Прибыль",
+        "description": "Прибыль",
+        "fields": ["Муниципальные образования", "Отчет 2012 год", "Отчет 2013 год", "Оценка 2014 год", "Прогноз 2015 год 1 вариант", "Прогноз 2015 год 2 вариант", "Прогноз 2016 год 1 вариант", "Прогноз 2016 год 2 вариант", "Прогноз 2017 год 1 вариант", "Прогноз 2017 год 2 вариант"]
+    }];
 
     require([
 
@@ -70,7 +144,7 @@
 
                 console.log(dataset_ex);
 
-                function get_all_sets (request) {
+                function get_all_sets(request) {
                     request.post("http://sandbox.icebreakerq.com:8081/api/dataset/", {
 //                        data: '{}',
                         
@@ -79,26 +153,46 @@
                             "Content-Type": "application/json"
                         }
                     }).then(function (text) {
-                        console.log("The server returned: ", text);
+                        dataset_ex = text;
+                        console.log(text);
                     });
                 }
-                var k = get_all_sets(request);
-                console.log(k);
+
+                var dataset_ready;
+                request.post("http://sandbox.icebreakerq.com:8081/api/dataset/", {
+//                        data: '{}',
+
+                    data: JSON.stringify({category: null}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    sync: true
+                }).then(function (text) {
+//                    console.log(text);
+                    dataset_ready = JSON.parse(text);
+                    console.log(JSON.stringify(dataset_ready));
+//                    return dataset_ready;
+                });
+
+
+//                dataset_ready.forEach(function (entry){
+//                    console.log("entry is: " + entry.name);
+//                });
 
                 dataset_ex.forEach(function (entry) {
                     console.log(entry.name);
                     var menuItem = new MenuItem({
                         label: entry.name,
                         onClick: function () {
+                            if (entry.name != null) {
                             console.log(dataset_ex.indexOf(entry));
                             listColumns(dataset_ex.indexOf(entry));
+                            }
                         }
                     });
                     menu.addChild(menuItem);
 
                 });
-
-
 
 
                 menu.startup();
@@ -132,18 +226,16 @@
 
 
                     dataset_ex[index].fields.forEach(function (field) {
-
                         console.log(field);
                         domConstruct.create("ul",
                                 {innerHTML: '<input type="checkbox" name="field">'
                                 + field
+                                + '<input type="text">'
                                 },
                                 "myList", "first");
-//                        var n = domConstruct.create("div", {innerHTML: "<p>hi</p>"});
-//                        domConstruct.create("p", {interHTML: '<input type="checkbox" name="field">"}, "unordered_list");
                     });
 
-                    console.log();
+
 
                 }
             });
@@ -151,38 +243,15 @@
 
 </script>
 
-<!--<div data-dojo-type="dijit/form/Form" id="myForm" data-dojo-id="myForm"-->
-<!--encType="multipart/form-data" action="" method="">-->
-<!--<table style="border: 1px solid #9f9f9f;" cellspacing="10">-->
-<!--<tr>-->
-<!--<td>-->
-<!--<label for="name">Name:</label>-->
-<!--</td>-->
-<!--<td>-->
-<!--<input type="text" id="name" name="name" required="true" data-dojo-type="dijit/form/ValidationTextBox"/>-->
-<!--</td>-->
-<!--</tr>-->
-<!--<tr>-->
-<!--<td>-->
-<!--<label for="dob23">Date of birth:</label>-->
-<!--</td>-->
-<!--<td>-->
-<!--<input type="text" id="dob23" name="dob31" data-dojo-type="dijit/form/DateTextBox"/>-->
-<!--</td>-->
-<!--</tr>-->
-<!--</table>-->
-<!--<button data-dojo-type="dijit/form/Button" type="button" onClick="console.log(myForm.getValues())">Get Values from form!</button>-->
-<!--<button data-dojo-type="dijit/form/Button" type="submit" name="submitButton" value="Submit">Submit</button>-->
-<button data-dojo-type="dijit/form/Button" type="button" onClick="checkedBox()">TESTIT</button>
 
-<!--</div>-->
+<button data-dojo-type="dijit/form/Button" type="button" onClick="checkedBox()">Отправляем</button>
 
 
 <div id="button"></div>
-<div id="myList"></div>
+
 
 <div id="unordered_list">
-
+    <div id="myList"></div>
 </div>
 
 
