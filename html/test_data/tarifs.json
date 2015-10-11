@@ -1,0 +1,47 @@
+[
+  {
+    "ROWNUM": "1",
+    "Region": "город Москва",
+    "TariffItem": "Водоснабжение",
+    "UnitOfMeasure": "руб/куб.м",
+    "StartDate": "01.07.2002",
+    "EndDate": "28.02.2003",
+    "MeasureDeviceAvail": "да/нет",
+    "StoveType": "",
+    "ConsumptionTime": "",
+    "ConsumptionTarget": "",
+    "Agency": "МГУП «Мосводоканал»",
+    "TariffValue": "2.3",
+    "global_id": "19769180"
+  },
+  {
+    "ROWNUM": "2",
+    "Region": "город Москва",
+    "TariffItem": "Отопление",
+    "UnitOfMeasure": "руб/кв.м",
+    "StartDate": "01.09.2002",
+    "EndDate": "31.03.2003",
+    "MeasureDeviceAvail": "нет",
+    "StoveType": "",
+    "ConsumptionTime": "",
+    "ConsumptionTarget": "ставки оплаты услуг отопления гражданами: имеющими более одного жилого помещения, а также за отопление общей площади жилого помещения, превышающей установленные нормы",
+    "Agency": "ОАО «Мосэнерго», ГУП «Мостеплоэнерго»",
+    "TariffValue": "6.6",
+    "global_id": "19769208"
+  },
+  {
+    "ROWNUM": "3",
+    "Region": "город Москва",
+    "TariffItem": "Водоснабжение",
+    "UnitOfMeasure": "руб/куб.м",
+    "StartDate": "01.03.2003",
+    "EndDate": "31.12.2003",
+    "MeasureDeviceAvail": "да/нет",
+    "StoveType": "",
+    "ConsumptionTime": "",
+    "ConsumptionTarget": "",
+    "Agency": "МГУП «Мосводоканал»",
+    "TariffValue": "3.11",
+    "global_id": "19769181"
+  }
+]

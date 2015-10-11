@@ -1,0 +1,29 @@
+[
+    {
+        "someId":"first",
+        "name": "Konstantin Grechishchev",
+        "profilePicture": "https://media.licdn.com/mpr/mprx/0_i-QzCWrSCwpnVJTUb1oR3eOSFEu9RZSUbA4ZkHh_fODzxM0zLGFJ6CIu_lb",
+        "logged": 1443505291110,
+        "lon": 37.7272362,
+        "lat": 55.7827699,
+        "distance": 9475844.770227924
+    },
+    {
+        "someId":"second",
+        "name": "Konstantin Grechishchev2",
+        "profilePicture": "https://media.licdn.com/mpr/mprx/0_i-QzCWrSCwpnVJTUb1oR3eOSFEu9RZSUbA4ZkHh_fODzxM0zLGFJ6CIu_lb",
+        "logged": 1443505291110,
+        "lon": 38.7272362,
+        "lat": 55.7827699,
+        "distance": 9475844.770227924
+    },
+    {
+        "someId":"third",
+        "name": "Konstantin Grechishchev3",
+        "profilePicture": "https://media.licdn.com/mpr/mprx/0_i-QzCWrSCwpnVJTUb1oR3eOSFEu9RZSUbA4ZkHh_fODzxM0zLGFJ6CIu_lb",
+        "logged": 1443505291110,
+        "lon": 37.7272362,
+        "lat": 56.7827699,
+        "distance": 9475844.770227924
+    }
+]
