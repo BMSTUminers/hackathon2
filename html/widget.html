@@ -94,7 +94,7 @@
                                             x: i+1,
                                             tooltip: "Rainflow statistics: " + document.labels[i],
                                             text: "I dont know whether it is important"
-                                        }
+                                        };
 
                                         //c.addSeries(document.labels[i], myRainBar, myRainBarStyle);
 
@@ -142,23 +142,44 @@
                             // Parse data from JSON to a JavaScript object
                             handleAs: "json"
                         }).then(function(data){
+
+                                    /**
+                                     * GET SOME JSON DATA HERE FOR LINE CHART
+                                     */
                                     document.jsonData = data;
 
-                                    require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland" , "dojo/ready"],
-                                            function(Chart, Default, StackedAreas, Wetland, ready){
+                                    require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas",
+                                                "dojox/charting/plot2d/Lines", "dojox/charting/plot2d/Markers", "dojox/charting/action2d/Highlight",
+                                                "dojox/charting/action2d/Tooltip",
+                                                "dojox/charting/themes/Wetland" , "dojo/ready"],
+                                            function(Chart, Default, StackedAreas, Lines, Markers, Highlight, Tooltip, Wetland, ready){
                                                 ready(function(){
                                                     var c = new Chart("chartRealData");
-                                                    c.addPlot("default", {type: StackedAreas, tension:3})
+                                                    c.addPlot("default", {type: Markers, tension:3})
                                                             .addAxis("x", {fixLower: "major", fixUpper: "major"})
                                                             .addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})
                                                             .setTheme(Wetland);
 
                                                     var points = new Array(document.jsonData.length);
+                                                    /**
+                                                     * CREATE POINTS HERE LOADED FROM JSON
+                                                     */
                                                     document.jsonData.forEach(function(item, i, arr) {
-                                                        points[i] = (parseFloat(item.TariffValue));
+                                                        var myPoint = {
+                                                            y: (parseFloat(item.TariffValue)),
+                                                            x: i+1,
+                                                            tooltip: "Tariff value (" + item.Region + "): " + item.TariffValue,
+                                                            text: "I dont know whether it is important"
+                                                        };
+                                                        points[i] = myPoint;
                                                     });
+
+
                                                     console.log(points);
                                                     c.addSeries("test", points);
+
+                                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+                                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
                                                     c.render();
                                                 });
                                             });
@@ -168,36 +189,70 @@
         }
 
         function renderPieChart(width, height) {
-            require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
-                        "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
-                        "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/dom-construct", "dojo/domReady!", "dojo/ready"],
-                    function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, domConstruct, domReady, ready){
-                        ready(function(){
+            require(["dojo/dom", "dojo/request", "dojo/json",
+                        "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
+                    function(dom, request, JSON, array, domConstruct){
 
-                            document.getElementById("Widget").innerHTML = "<div id='chartTwo' style='width:" +
-                                    width + "px;" + "height: " + height + "px;" + "'></div>";
+                        document.getElementById("Widget").innerHTML = "<div id='chartTwo' style='width:" +
+                                width + "px;" + "height: " + height + "px;" + "'></div>";
+                        // Results will be displayed in resultDiv
 
-                            var chartTwo = new Chart("chartTwo");
-                            chartTwo.setTheme(MiamiNice)
-                                    .addPlot("default", {
-                                        type: Pie,
-                                        font: "normal normal 11pt Tahoma",
-                                        fontColor: "black",
-                                        labelOffset: -30,
-                                        radius: 80
-                                    }).addSeries("Series A", [
-                                        {y: 4, text: "Red",   stroke: "black", tooltip: "Red is 50%"},
-                                        {y: 2, text: "Green", stroke: "black", tooltip: "Green is 25%"},
-                                        {y: 1, text: "Blue",  stroke: "black", tooltip: "I am feeling Blue!"},
-                                        {y: 1, text: "Other", stroke: "black", tooltip: "Mighty <strong>strong</strong><br>With two lines!"}
-                                    ]);
-                            var anim_a = new MoveSlice(chartTwo, "default");
-                            var anim_b = new Highlight(chartTwo, "default");
-                            var anim_c = new Tooltip(chartTwo, "default");
-                            chartTwo.render();
-                            var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
+                        /**
+                         * HERE DATA IS REQUESTED
+                         */
+
+                        request.get("test_data/tarifs.json", {
+                            // Parse data from JSON to a JavaScript object
+                            handleAs: "json"
+                        }).then(function(data) {
+
+                            /**
+                             * GET SOME JSON DATA HERE FOR LINE CHART
+                             */
+                            document.jsonData = data;
+
+                            require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
+                                        "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
+                                        "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/dom-construct", "dojo/domReady!", "dojo/ready"],
+                                    function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, domConstruct, domReady, ready){
+                                        ready(function(){
+
+                                            var chartTwo = new Chart("chartTwo");
+                                            chartTwo.setTheme(MiamiNice)
+                                                    .addPlot("default", {
+                                                        type: Pie,
+                                                        font: "normal normal 11pt Tahoma",
+                                                        fontColor: "black",
+                                                        labelOffset: -30,
+                                                        radius: 80
+                                                    });
+
+                                            var parts = new Array(document.jsonData.length);
+                                            /**
+                                             * CREATE PARTS HERE LOADED FROM JSON
+                                             */
+                                            document.jsonData.forEach(function(item, i, arr) {
+                                                var myPart = {
+                                                    y: (parseFloat(item.TariffValue)),
+                                                    text: item.Region,
+                                                    stroke: "black",
+                                                    tooltip: "Tariff value (" + item.Region + "): " + item.TariffValue
+                                                };
+                                                parts[i] = myPart;
+                                            });
+
+                                            chartTwo.addSeries("Series", parts);
+
+                                            var anim_a = new MoveSlice(chartTwo, "default");
+                                            var anim_b = new Highlight(chartTwo, "default");
+                                            var anim_c = new Tooltip(chartTwo, "default");
+                                            chartTwo.render();
+                                            var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
+                                        });
+                                    });
                         });
                     });
+
         }
     </script>
 
