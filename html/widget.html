@@ -15,23 +15,23 @@
             console.log(params);
             switch (params.chartType) {
                 case "bar":
-                    renderBarChart(params.width, params.height);
+                    renderBarChart(params.width, params.height, params.id);
                     break;
                 case "line":
-                    renderLineChart(params.width, params.height);
+                    renderLineChart(params.width, params.height, params.id);
                     break;
                 case "pie":
-                    renderPieChart(params.width, params.height);
+                    renderPieChart(params.width, params.height, params.id);
                     break;
                 case "map":
-                    renderMapChart(params.width, params.height);
+                    renderMapChart(params.width, params.height, params.id);
                     break;
                 default:
                     alert("sorry");
             }
         });
 
-        function renderBarChart(width, height) {
+        function renderBarChart(width, height, id) {
             require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
 
                 document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
@@ -131,7 +131,7 @@
             });
         }
 
-        function renderLineChart(width, height) {
+        function renderLineChart(width, height, id) {
             require(["dojo/dom", "dojo/request", "dojo/json",
                         "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
                     function(dom, request, JSON, array, domConstruct){
@@ -191,7 +191,7 @@
                     });
         }
 
-        function renderPieChart(width, height) {
+        function renderPieChart(width, height, id) {
             require(["dojo/dom", "dojo/request", "dojo/json",
                         "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
                     function(dom, request, JSON, array, domConstruct){
@@ -258,7 +258,7 @@
 
         }
 
-        function renderMapChart(width, height) {
+        function renderMapChart(width, height, id) {
             require(["dojo/dom", "dojo/request", "dojo/json",
                         "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
                     function(dom, request, JSON, array, domConstruct){
@@ -270,7 +270,7 @@
                          * REQUEST DATA HERE
                          */
 
-                        request.get("test_data/tarifs.json", {
+                        request.get("test_data/cafe.json", {
                             // Parse data from JSON to a JavaScript object
                             handleAs: "json"
                         }).then(function(data) {
@@ -307,17 +307,17 @@
                                                 fill: "lightblue"
                                             };
 
-                                            document.jsonData.forEach(function(item, i, arr) {
+                                            document.jsonData.page.forEach(function(item, i, arr) {
 
                                                 var myLabel = {
                                                     value: i+1,
-                                                    text: item.Region
+                                                    text: item[3]
                                                 };
 
                                                 var myBar = {
-                                                    y: parseInt(item.TariffValue),
+                                                    y: parseInt(item[2]),
                                                     x: i+1,
-                                                    tooltip: item.Region,
+                                                    tooltip: item[3],
                                                     text: "I dont know whether it is important"
                                                 };
 
@@ -357,6 +357,7 @@
 
 </head>
 <body class="claro">
+
 <div id="Widget"></div>
 
 <!--<div id="chartOne" style="width: 400px; height: 240px;"></div>-->

@@ -19,7 +19,7 @@
 
 </head>
 <body>
-<div id="map"></div>
+<div id="map" style="width: 1000px; height: 600px"></div>
 <script>
 
     var map;
@@ -46,28 +46,27 @@
         var icon = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
 
         var marker = new google.maps.Marker({
-            position: {lat: data.lat, lng: data.lon},
+            position: {lat: parseFloat(data[0]), lng: parseFloat(data[1])},
             icon: icon,
             map: map
         });
+
         var contentString = '<div id="content">'+
                 '<div id="siteNotice">'+
                 '</div>'+
                 '<div id="bodyContent">'+
                 '<div style="display: table-row">' +
                 '<div style="display: table-cell; vertical-align: middle;"> ' +
-                '<iframe src="http://localhost:63342/hackathon2/html/widget.html?chartType=map&width=200&height=100" width=220px height=140px align="left">' +
+                '<iframe src="http://localhost:63342/hackathon2/html/widget.html?chartType=map&width=250&height=100" width=260px height=140px align="left">' +
                 'Ваш браузер не поддерживает плавающие фреймы!' +
                 '</iframe>' +
-
                 '</div>' +
                 '<div style="display: table-cell; vertical-align: middle;">' +
-                '<h3>' + data.name + ' (' + data.someId + ')</h3><br/>' +
-                'distance: ' + data.distance.toFixed(2) + ' meters<br/>' +
-                'last login: ' + new Date(data.logged) +
+                '<h3>'+  'Выбрана:' + data[4] + '</h3><br/>' +
                 '</div>' +
                 '</div>'+
                 '</div>';
+
         var infowindow = new google.maps.InfoWindow({
             content: contentString
         });
@@ -80,7 +79,7 @@
 
     function addClusterPoint(data) {
         var marker = new google.maps.Marker({
-            position: {lat: data.lat, lng: data.lon},
+            position: {lat: parseFloat(data.lat), lng: parseFloat(data.lon)},
             icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
             map: map
         });
@@ -90,6 +89,7 @@
                 '<h1 id="firstHeading" class="firstHeading">'+ data.count +'</h1>' +
                 '</div>'+
                 '</div>';
+
 
         var infowindow = new google.maps.InfoWindow({
             content: contentString
@@ -118,17 +118,14 @@
         };
         $.ajax({
             type: "GET",
-            url: "test_data/markers.json",
+            url: "test_data/mapmarkers.json",
             data: JSON.stringify(data),
             success: function(data){
-                for (i in data) {
-                    if ("someId" in data[i]) {
-                        addUserPoint(data[i]);
-                    } else {
-                        addClusterPoint(data[i]);
+                for (i = 1; i< data.page.length; i++) {
+                        addUserPoint(data.page[i]);
                     }
                 }
-            },
+            ,
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
                 alert(errorThrown);
