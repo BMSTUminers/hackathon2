@@ -62,7 +62,7 @@
 
                 '</div>' +
                 '<div style="display: table-cell; vertical-align: middle;">' +
-                '<h3>' + data.name + ' (' + data.userId + ')</h3><br/>' +
+                '<h3>' + data.name + ' (' + data.someId + ')</h3><br/>' +
                 'distance: ' + data.distance.toFixed(2) + ' meters<br/>' +
                 'last login: ' + new Date(data.logged) +
                 '</div>' +
@@ -122,7 +122,7 @@
             data: JSON.stringify(data),
             success: function(data){
                 for (i in data) {
-                    if ("userId" in data[i]) {
+                    if ("someId" in data[i]) {
                         addUserPoint(data[i]);
                     } else {
                         addClusterPoint(data[i]);

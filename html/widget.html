@@ -8,235 +8,224 @@
     <script src="bower_components/dojo/dojo.js"></script>
 
     <script>
-        require(["dojo/request/xhr"], function(xhr) {
-            xhr.get("test_data/myfile.csv", {
-                handleAs: "text"
-            }).then(function(data) {
-                var lines = data.split(/\r?\n/);
-                document.labels = new Array(lines.length - 1);
-                document.rainFlow = new Array(lines.length - 1);
-                document.avgTemp = new Array(lines.length - 1);
-                require(["dojo/_base/array"], function(array) {
-                    /** Rest of code */
-                    array.forEach(lines, function(line, i) {
-                        var cells = line.split(',');
-                        if (i!=0) {
-                            document.labels[i-1] = cells[3].substring(1, cells[3].length - 1);
-                            document.rainFlow[i-1] = cells[5].substring(1, cells[5].length - 1);
-                            document.avgTemp[i-1] = cells[4].substring(1, cells[4].length - 1);
-                        }
+        require([
+            "dojo/io-query",
+        ], function (ioQuery) {
+            params = ioQuery.queryToObject(decodeURIComponent(dojo.doc.location.search.slice(1)));
+            console.log(params);
+            switch (params.chartType) {
+                case "bar":
+                    renderBarChart(params.width, params.height);
+                    break;
+                case "line":
+                    renderLineChart(params.width, params.height);
+                    break;
+                case "pie":
+                    renderPieChart(params.width, params.height);
+                    break;
+                default:
+                    alert("sorry");
+            }
+        });
+
+        function renderBarChart(width, height) {
+            require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
+
+                document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
+                        width + "px;" + "height: " + height + "px;" + "'></div>";
+
+                xhr.get("test_data/myfile.csv", {
+                    handleAs: "text"
+                }).then(function(data) {
+                    var lines = data.split(/\r?\n/);
+                    document.labels = new Array(lines.length - 1);
+                    document.rainFlow = new Array(lines.length - 1);
+                    document.avgTemp = new Array(lines.length - 1);
+                    require(["dojo/_base/array"], function(array) {
+                        /** Rest of code */
+                        array.forEach(lines, function(line, i) {
+                            var cells = line.split(',');
+                            if (i!=0) {
+                                document.labels[i-1] = cells[3].substring(1, cells[3].length - 1);
+                                document.rainFlow[i-1] = cells[5].substring(1, cells[5].length - 1);
+                                document.avgTemp[i-1] = cells[4].substring(1, cells[4].length - 1);
+                            }
+                        });
                     });
-                });
-                console.log();
-                require(["dojox/charting/Chart2D",
-                            "dojox/charting/plot2d/Columns",
-                            "dojox/charting/themes/Wetland",
-                            "dojox/charting/action2d/Highlight",
-                            "dojox/charting/action2d/Tooltip",
-                            "dojox/charting/themes/CubanShirts",
-                            "dojox/charting/widget/SelectableLegend",
-                            "dojox/charting/widget/Legend",
-                            "dojo/ready"],
+                    console.log();
+                    require(["dojox/charting/Chart2D",
+                                "dojox/charting/plot2d/Columns",
+                                "dojox/charting/themes/Wetland",
+                                "dojox/charting/action2d/Highlight",
+                                "dojox/charting/action2d/Tooltip",
+                                "dojox/charting/themes/CubanShirts",
+                                "dojox/charting/widget/SelectableLegend",
+                                "dojox/charting/widget/Legend",
+                                "dojo/ready"],
 
-                        function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
-                            ready(function () {
-                                var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
-                                c.addPlot("default", {
-                                    type: "Columns",
-                                    tension: 1,
-                                    gap: 2
-                                });
+                            function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
+                                ready(function () {
+                                    var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
+                                    c.addPlot("default", {
+                                        type: "Columns",
+                                        tension: 1,
+                                        gap: 2
+                                    });
 
-                                var jsonLabels = new Array(document.labels.length);
-                                var jsonBars = new Array(document.labels.length);
+                                    var jsonLabels = new Array(document.labels.length);
+                                    var jsonBars = new Array(document.labels.length);
 
-                                var myRainBarStyle = {
-                                    stroke: {
-                                        color: "blue",
-                                        width: 1
-                                    },
-                                    fill: "lightblue"
-                                };
-
-                                for (i = 0; i < document.labels.length; i++) {
-                                    var mylabel = {
-                                        value: i+1,
-                                        text: document.labels[i]
+                                    var myRainBarStyle = {
+                                        stroke: {
+                                            color: "blue",
+                                            width: 1
+                                        },
+                                        fill: "lightblue"
                                     };
 
-                                    var myRainBar = {
-                                        y: parseInt(document.rainFlow[i]),
-                                        x: i+1,
-                                        tooltip: "Статистика осадков: " + document.labels[i],
-                                        text: "I dont know whether it is important"
+                                    for (i = 0; i < document.labels.length; i++) {
+                                        var mylabel = {
+                                            value: i+1,
+                                            text: document.labels[i]
+                                        };
+
+                                        var myRainBar = {
+                                            y: parseInt(document.rainFlow[i]),
+                                            x: i+1,
+                                            tooltip: "Rainflow statistics: " + document.labels[i],
+                                            text: "I dont know whether it is important"
+                                        }
+
+                                        //c.addSeries(document.labels[i], myRainBar, myRainBarStyle);
+
+                                        jsonBars[i] = myRainBar;
+                                        jsonLabels[i] = mylabel;
                                     }
 
-                                    //c.addSeries(document.labels[i], myRainBar, myRainBarStyle);
+                                    console.log();
 
-                                    jsonBars[i] = myRainBar;
-                                    jsonLabels[i] = mylabel;
-                                }
+                                    c.addSeries("hjhjj 1", jsonBars, myRainBarStyle);
 
-                                console.log();
+                                    c.addAxis("x", {
+                                        labels: jsonLabels,
+                                        fixLower: "major",
+                                        fixUpper: "major"
+                                    });
+                                    c.addAxis("y", {
+                                        vertical: true,
+                                        fixLower: "major",
+                                        fixUpper: "major",
+                                        min: 0
+                                    });
+                                    c.setTheme(dojox.charting.themes.Wetland);
 
-                                c.addSeries("hjhjj 1", jsonBars, myRainBarStyle);
-
-                                c.addAxis("x", {
-                                    labels: jsonLabels,
-                                    fixLower: "major",
-                                    fixUpper: "major"
+                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
+                                    c.render();
                                 });
-                                c.addAxis("y", {
-                                    vertical: true,
-                                    fixLower: "major",
-                                    fixUpper: "major",
-                                    min: 0
-                                });
-                                c.setTheme(dojox.charting.themes.Wetland);
-//                                c.addSeries("hjhjj 1", [{
-//                                    y: 100,
-//                                    x: 2,
-//                                    tooltip: "Splited hohohoh1 ",
-//                                    text: "Splited 1"
-//                                }], myRainBarStyle);
-//                                c.addSeries("Larger", [{
-//                                    y: 1000,
-//                                    x: 1,
-//                                    tooltip: "Larger",
-//                                    text: "Larger",
-//                                    stroke: {
-//                                        color: "blue",
-//                                        width: 2
-//                                    },
-//                                    fill: "lightblue"
-//                                }, ]);
-//
-//                                c.addSeries("Splited 2", [{
-//                                    y: 300,
-//                                    x: 2,
-//                                    tooltip: "Splited 2",
-//                                    text: "Splited 2",
-//                                    color: "lightgreen",
-//                                    stroke: {
-//                                        color: "green",
-//                                        width: 2
-//                                    }
-//                                }]);
-                                var a1 = new dojox.charting.action2d.Tooltip(c, "default");
-                                var a2 = new dojox.charting.action2d.Highlight(c, "default");
-                                c.render();
                             });
-                        });
+                });
             });
-        });
-    </script>
-    <script>
-        require(["dojo/dom", "dojo/request", "dojo/json",
-                    "dojo/_base/array", "dojo/domReady!"],
-                function(dom, request, JSON, array){
-                    // Results will be displayed in resultDiv
-                    var resultDiv = dom.byId("resultDiv");
+        }
 
-                    // Request the JSON data from the server
-                    request.get("test_data/tarifs.json", {
-                        // Parse data from JSON to a JavaScript object
-                        handleAs: "json"
-                    }).then(function(data){
-                                document.jsonData = data;
-                                //do something with data
+        function renderLineChart(width, height) {
+            require(["dojo/dom", "dojo/request", "dojo/json",
+                        "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
+                    function(dom, request, JSON, array, domConstruct){
+                        document.getElementById("Widget").innerHTML = "<div id='chartRealData' style='width:" +
+                                width + "px;" + "height: " + height + "px;" + "'></div>";
+                        // Results will be displayed in resultDiv
+                        var resultDiv = dom.byId("resultDiv");
 
-                                //console.log(data);
-                                require([
-                                    "dojo/io-query",
-                                ], function (ioQuery) {
-                                    GET = ioQuery.queryToObject(decodeURIComponent(dojo.doc.location.search.slice(1)));
-                                    console.log(GET);
-                                });
+                        // Request the JSON data from the server
+                        request.get("test_data/tarifs.json", {
+                            // Parse data from JSON to a JavaScript object
+                            handleAs: "json"
+                        }).then(function(data){
+                                    document.jsonData = data;
 
-                                require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland" , "dojo/ready"],
-                                        function(Chart, Default, StackedAreas, Wetland, ready){
-                                            ready(function(){
-                                                var c = new Chart("chartRealData");
-                                                c.addPlot("default", {type: StackedAreas, tension:3})
-                                                        .addAxis("x", {fixLower: "major", fixUpper: "major"})
-                                                        .addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})
-                                                        .setTheme(Wetland);
+                                    require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland" , "dojo/ready"],
+                                            function(Chart, Default, StackedAreas, Wetland, ready){
+                                                ready(function(){
+                                                    var c = new Chart("chartRealData");
+                                                    c.addPlot("default", {type: StackedAreas, tension:3})
+                                                            .addAxis("x", {fixLower: "major", fixUpper: "major"})
+                                                            .addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})
+                                                            .setTheme(Wetland);
 
-                                                var points = new Array(document.jsonData.length);
-                                                document.jsonData.forEach(function(item, i, arr) {
-                                                    points[i] = (parseFloat(item.TariffValue));
+                                                    var points = new Array(document.jsonData.length);
+                                                    document.jsonData.forEach(function(item, i, arr) {
+                                                        points[i] = (parseFloat(item.TariffValue));
+                                                    });
+                                                    console.log(points);
+                                                    c.addSeries("test", points);
+                                                    c.render();
                                                 });
-                                                console.log(points);
-                                                c.addSeries("test", points);
-                                                c.render();
-
-//                                                        .addSeries("Series A", [1, 2, 0.5, 1.5, 1, 2.8, 0.4])
-//                                                        .addSeries("Series B", [2.6, 1.8, 2, 1, 1.4, 0.7, 2])
-//                                                        .addSeries("Series C", [6.3, 1.8, 3, 0.5, 4.4, 2.7, 2])
-//                                                        .render();
                                             });
-                                        });
+                                }
+                        )
+                    });
+        }
 
-                                //jsonData = data;
-                    }
+        function renderPieChart(width, height) {
+            require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
+                        "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
+                        "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/dom-construct", "dojo/domReady!", "dojo/ready"],
+                    function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, domConstruct, domReady, ready){
+                        ready(function(){
 
-                )});
+                            document.getElementById("Widget").innerHTML = "<div id='chartTwo' style='width:" +
+                                    width + "px;" + "height: " + height + "px;" + "'></div>";
 
+                            var chartTwo = new Chart("chartTwo");
+                            chartTwo.setTheme(MiamiNice)
+                                    .addPlot("default", {
+                                        type: Pie,
+                                        font: "normal normal 11pt Tahoma",
+                                        fontColor: "black",
+                                        labelOffset: -30,
+                                        radius: 80
+                                    }).addSeries("Series A", [
+                                        {y: 4, text: "Red",   stroke: "black", tooltip: "Red is 50%"},
+                                        {y: 2, text: "Green", stroke: "black", tooltip: "Green is 25%"},
+                                        {y: 1, text: "Blue",  stroke: "black", tooltip: "I am feeling Blue!"},
+                                        {y: 1, text: "Other", stroke: "black", tooltip: "Mighty <strong>strong</strong><br>With two lines!"}
+                                    ]);
+                            var anim_a = new MoveSlice(chartTwo, "default");
+                            var anim_b = new Highlight(chartTwo, "default");
+                            var anim_c = new Tooltip(chartTwo, "default");
+                            chartTwo.render();
+                            var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
+                        });
+                    });
+        }
     </script>
 
-    <script>
-        require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
-                    "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
-                    "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/ready"],
-                function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, ready){
-                    ready(function(){
-                        var chartTwo = new Chart("chartTwo");
-                        chartTwo.setTheme(MiamiNice)
-                                .addPlot("default", {
-                                    type: Pie,
-                                    font: "normal normal 11pt Tahoma",
-                                    fontColor: "black",
-                                    labelOffset: -30,
-                                    radius: 80
-                                }).addSeries("Series A", [
-                                    {y: 4, text: "Red",   stroke: "black", tooltip: "Red is 50%"},
-                                    {y: 2, text: "Green", stroke: "black", tooltip: "Green is 25%"},
-                                    {y: 1, text: "Blue",  stroke: "black", tooltip: "I am feeling Blue!"},
-                                    {y: 1, text: "Other", stroke: "black", tooltip: "Mighty <strong>strong</strong><br>With two lines!"}
-                                ]);
-                        var anim_a = new MoveSlice(chartTwo, "default");
-                        var anim_b = new Highlight(chartTwo, "default");
-                        var anim_c = new Tooltip(chartTwo, "default");
-                        chartTwo.render();
-                        var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
-                    });
-                });
+    <!--<script>-->
 
-        require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland" , "dojo/ready"],
-                function(Chart, Default, StackedAreas, Wetland, ready){
-                    ready(function(){
-                        var c = new Chart("chartOne");
-                        c.addPlot("default", {type: StackedAreas, tension:3})
-                                .addAxis("x", {fixLower: "major", fixUpper: "major"})
-                                .addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})
-                                .setTheme(Wetland)
-                                .addSeries("Series A", [1, 2, 0.5, 1.5, 1, 2.8, 0.4])
-                                .addSeries("Series B", [2.6, 1.8, 2, 1, 1.4, 0.7, 2])
-                                .addSeries("Series C", [6.3, 1.8, 3, 0.5, 4.4, 2.7, 2])
-                                .render();
-                    });
-                });
+        <!--require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland" , "dojo/ready"],-->
+                <!--function(Chart, Default, StackedAreas, Wetland, ready){-->
+                    <!--ready(function(){-->
+                        <!--var c = new Chart("chartOne");-->
+                        <!--c.addPlot("default", {type: StackedAreas, tension:3})-->
+                                <!--.addAxis("x", {fixLower: "major", fixUpper: "major"})-->
+                                <!--.addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})-->
+                                <!--.setTheme(Wetland)-->
+                                <!--.addSeries("Series A", [1, 2, 0.5, 1.5, 1, 2.8, 0.4])-->
+                                <!--.addSeries("Series B", [2.6, 1.8, 2, 1, 1.4, 0.7, 2])-->
+                                <!--.addSeries("Series C", [6.3, 1.8, 3, 0.5, 4.4, 2.7, 2])-->
+                                <!--.render();-->
+                    <!--});-->
+                <!--});-->
 
-    </script>
+    <!--</script>-->
 
 </head>
 <body class="claro">
-<div id="chartOne" style="width: 400px; height: 240px;"></div>
-<div id="chartTwo" style="width: 400px; height: 300px;"></div>
-<div id="chartRealData" style="width: 400px; height: 300px;"></div>
-<div id="legendTwo"></div>
-<div id="reportTotalsChartDiv" style='display:block; clear:none; z-index:999;width: 100%; height: 300px;'></div>
-<div id='reportTotalsLegendDiv'></div>
+<div id="Widget"></div>
+
+<!--<div id="chartOne" style="width: 400px; height: 240px;"></div>-->
+
 <div id="resultDiv"></div>
 </body>
 </html>
