@@ -14,15 +14,19 @@
 
 <script>
 
+    document.choosenIndex = null;
     function checkedBox() {
 
         var form = document.getElementById("myList");
         var uls = form.children;
+        var column_set = [];
         for(i = 0; i < uls.length; i++) {
             if (uls[i].firstChild.checked) {
-                alert("ololo, " + i + " is checked!!!");
+//                column_set.push(uls[i].firstChild);
+                column_set.push(i)
             }
         }
+        console.log(column_set);
     }
 
     dataset_ex = [
@@ -108,13 +112,25 @@
                 button.startup();
 
                 function listColumns(index) {
+                    document.getElementById("myList").innerHTML = "";
                     console.log(dataset_ex[index].fields);
                     document.getElementById("myList").innerHTML="";
 //                    var node = domConstruct.create("div");
 //                    domConstruct.create("form", "",   "unodered_list");
 //                    var ul = domConstruct.create("ul", null, "someId", "first");
-
+                    document.choosenIndex = index;
                     domConstruct.create("form");
+                    domConstruct.create("span", {
+                        innerHTML: "<label>Название набора: </label>" +
+                        dataset_ex[index].name
+                    }, "myList");
+
+                    domConstruct.create("span", {
+                        innerHTML: "<br><label>Описание: </label>" +
+                        dataset_ex[index].description
+                    }, "myList");
+
+
                     dataset_ex[index].fields.forEach(function (field) {
 
                         console.log(field);
@@ -135,31 +151,31 @@
 
 </script>
 
-<div data-dojo-type="dijit/form/Form" id="myForm" data-dojo-id="myForm"
-     encType="multipart/form-data" action="" method="">
-<table style="border: 1px solid #9f9f9f;" cellspacing="10">
-    <tr>
-        <td>
-            <label for="name">Name:</label>
-        </td>
-        <td>
-            <input type="text" id="name" name="name" required="true" data-dojo-type="dijit/form/ValidationTextBox"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="dob23">Date of birth:</label>
-        </td>
-        <td>
-            <input type="text" id="dob23" name="dob31" data-dojo-type="dijit/form/DateTextBox"/>
-        </td>
-    </tr>
-</table>
-<button data-dojo-type="dijit/form/Button" type="button" onClick="console.log(myForm.getValues())">Get Values from form!</button>
-<button data-dojo-type="dijit/form/Button" type="submit" name="submitButton" value="Submit">Submit</button>
+<!--<div data-dojo-type="dijit/form/Form" id="myForm" data-dojo-id="myForm"-->
+<!--encType="multipart/form-data" action="" method="">-->
+<!--<table style="border: 1px solid #9f9f9f;" cellspacing="10">-->
+<!--<tr>-->
+<!--<td>-->
+<!--<label for="name">Name:</label>-->
+<!--</td>-->
+<!--<td>-->
+<!--<input type="text" id="name" name="name" required="true" data-dojo-type="dijit/form/ValidationTextBox"/>-->
+<!--</td>-->
+<!--</tr>-->
+<!--<tr>-->
+<!--<td>-->
+<!--<label for="dob23">Date of birth:</label>-->
+<!--</td>-->
+<!--<td>-->
+<!--<input type="text" id="dob23" name="dob31" data-dojo-type="dijit/form/DateTextBox"/>-->
+<!--</td>-->
+<!--</tr>-->
+<!--</table>-->
+<!--<button data-dojo-type="dijit/form/Button" type="button" onClick="console.log(myForm.getValues())">Get Values from form!</button>-->
+<!--<button data-dojo-type="dijit/form/Button" type="submit" name="submitButton" value="Submit">Submit</button>-->
 <button data-dojo-type="dijit/form/Button" type="button" onClick="checkedBox()">TESTIT</button>
 
-</div>
+<!--</div>-->
 
 
 <div id="button"></div>
