@@ -7,8 +7,10 @@ import org.bmstuminers.hackathon2.repo.CachedDatasetLineRepository;
 import org.bmstuminers.hackathon2.repo.CachedDatasetRepository;
 import org.bmstuminers.hackathon2.repo.ChainRepository;
 import org.bmstuminers.hackathon2.service.block.AverageLoader;
+import org.bmstuminers.hackathon2.service.block.AndFilter;
 import org.bmstuminers.hackathon2.service.block.Block;
 import org.bmstuminers.hackathon2.service.block.DatasetLoader;
+import org.bmstuminers.hackathon2.service.block.OrFilter;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,7 +50,9 @@ public class ChainService {
         this.cachedDatasetRepository = cachedDatasetRepository;
 
         availableBlocks.add(new DatasetLoader(this.datasetService));
-        availableBlocks.add(new AverageLoader(this.datasetService));
+        availableBlocks.add(new OrFilter());
+        availableBlocks.add(new AndFilter());
+	availableBlocks.add(new AverageLoader(this.datasetService));
     }
 
     public List<Block> getAvailableBlocks() {
