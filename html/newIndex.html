@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New input form</title>
+    <link rel="stylesheet" href="bower_components/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="scripts/DragManager.js"></script>
+    <script src="https://cdn.polyfill.io/v1/polyfill.js?features=Element.prototype.closest"></script>
+    <script>dojoConfig = {parseOnLoad: true}</script>
+    <script src="bower_components/dojo/dojo.js"></script>
+</head>
+
+<body class="claro">
+<script>
+
+
+    require([
+                "dijit/Menu",
+                "dijit/MenuItem",
+                "dijit/form/ComboButton",
+                "dojo/dom-construct",
+                "dojo/_base/array",
+                "dojo/domReady!",
+                "dojo/_base/window",
+                "dojo/request"
+            ],
+
+            function (Menu, MenuItem, ComboButton, domConstruct, array, domReady, window, request) {
+
+                /**
+                 *
+                 * HERE WE MAY REQUEST THE DATA TO FORM THE DATASOURCE LIST
+                 *
+                 */
+
+                request.get("test_data/dataset.json", {
+                    // Parse data from JSON to a JavaScript object
+                    handleAs: "json"
+                }).then(function(data) {
+                    document.dataSet = data;
+
+                    function drag(ev) {
+                        return false;
+                    }
+
+                    function listColumns(index) {
+                        document.getElementById("dataSetInfo").innerHTML = "<table id='dataSourceFields'> </table>";
+                        document.choosenIndex = index;
+
+                        domConstruct.create("span", {
+                            innerHTML: "<br><label>Описание:&nbsp</label>" +
+                            document.dataSet[index].description
+                        }, "dataSetInfo", "first");
+
+                        domConstruct.create("span", {
+                            innerHTML: "<br><label>Название набора:&nbsp</label>" +
+                            document.dataSet[index].name
+                        }, "dataSetInfo", "first");
+
+                        domConstruct.create("tr", {
+                            innerHTML: "<th>Доступные поля <br> в указанном источнике данных:</th>"
+                            + "<th>Применить фильтры: </th>"}, "dataSourceFields", "first");
+
+
+                        document.dataSet[index].fields.forEach(function (field) {
+                            console.log(field);
+                            domConstruct.create("tr",
+                                    {innerHTML: '<td>' + '<span class="dataSourceField">' + field + '</span>' + '</td>'
+                                    + '<td>' + '<input type="text">' + '</td>'
+                                    },
+                                    "dataSourceFields", "last");
+                        });
+                    }
+
+                    var menu = new Menu({style: "display: none;"});
+
+                    document.dataSet.forEach(function (entry) {
+                        console.log(entry.name);
+                        var menuItem = new MenuItem({
+                            label: entry.name,
+                            onClick: function () {
+                                if (entry.name != null) {
+                                    console.log(document.dataSet.indexOf(entry));
+                                    listColumns(document.dataSet.indexOf(entry));
+                                }
+                            }
+                        });
+                        menu.addChild(menuItem);
+                    });
+
+                    menu.startup();
+
+                    var button = new ComboButton({
+                        label: "<img src='images/datasource.jpg' height='20' width='25'>",
+                        dropDown: menu
+                    });
+                    button.placeAt(document.getElementById("dataSourcesFind"));
+                    button.startup();
+                });
+            });
+
+
+
+    DragManager.onDragCancel = function(dragObject) {
+        dragObject.avatar.rollback();
+    };
+
+    document.draggedElements = new Array();
+
+    function cancelDrag() {
+        for (var i = 0; i < document.draggedElements.length; i++) {
+            var cElem = document.draggedElements[i].element;
+            var cOld = document.draggedElements[i].old;
+
+            cOld.parent.insertBefore(cElem, cOld.nextSibling);
+            cElem.style.position = cOld.position;
+            cElem.style.left = cOld.left;
+            cElem.style.top = cOld.top;
+            cElem.style.zIndex = cOld.zIndex
+        }
+    };
+
+    function pieClick() {
+
+        require([
+                    "dijit/Menu",
+                    "dijit/MenuItem",
+                    "dijit/form/ComboButton",
+                    "dojo/dom-construct",
+                    "dojo/_base/array",
+                    "dojo/domReady!",
+                    "dojo/_base/window",
+                    "dojo/request"
+                ],
+
+                function (Menu, MenuItem, ComboButton, domConstruct, array, domReady, window, request) {
+                    document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Переменная №1</td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Переменная №2</td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+
+                });
+    }
+
+//    <span class="droppable">
+//            Перетащите колонку сюда
+//    </span>
+
+//    DragManager.onDragEnd = function(dragObject, dropElem) {
+//        dragObject.elem.style.display = 'none';
+//        dropElem.classList.add('computer-smile');
+//        setTimeout(function() {
+//            dropElem.classList.remove('computer-smile');
+//        }, 200);
+//    };
+</script>
+
+<div id="mainContainer">
+    <table id="userInteract">
+        <tr>
+            <td id="leftPart">
+                <div id="dataSourceContainer">
+                    <table id="chooseDataSource">
+                        <tr>
+                            <td>
+                                <label> Выберите исходный источник открытых данных: </label>
+                            </td>
+                            <td id="dataSourcesFind"></td>
+                        </tr>
+                    </table>
+                    <div id="dataSetInfo">
+
+                    </div>
+                </div>
+            </td>
+            <td id="rightPart">
+                <div>
+                    <table id="chooseChartType">
+                        <label> Выберите тип графического отображения: </label>
+                        <tr>
+                            <td>
+                                <input type="image" id="myImagePie" onclick='pieClick()' src="images/pie-chart-3.svg" />
+                            </td>
+                            <td>
+                                <input type="image" id="myImageLine" onclick='pieClick()' src="images/2000px-ScientificGraphSpeedVsTime.svg.png" />
+                            </td>
+                            <td>
+                                <input type="image" id="myImageBar" onclick='pieClick()' src="images/bar-chart.jpg" />
+                            </td>
+                            <td>
+                                <input type="image" id="myImageGlobe" onclick='pieClick()' src="images/3d-Earth-Globe.png" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Кусочный график
+                            </td>
+                            <td>
+                                Линейный график
+                            </td>
+                            <td>
+                                Столбчатый график
+                            </td>
+                            <td>
+                                Карта
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <div id="Constructor">
+
+                    </div>
+
+                    <button onclick="cancelDrag()"> Отмена </button>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

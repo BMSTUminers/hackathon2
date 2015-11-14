@@ -1,0 +1,149 @@
+#mainContainer {
+    border: 1px solid #565656;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+
+}
+
+#chooseDataSource {
+    border: 1px solid #292929;
+    border-collapse: separate;
+    border-spacing: 10px ;
+}
+
+
+
+#dataSetInfo {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+table#dataSourceFields {
+    /*border: 1px solid #292929;*/
+    border-collapse: separate;
+    /*border-spacing: 5px ;*/
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table#ConstructorTable {
+    /*border: 1px solid #292929;*/
+    border-collapse: separate;
+    /*border-spacing: 5px ;*/
+    /*border: 1px solid black;*/
+    border-collapse: collapse;
+}
+
+table#ConstructorTable td	{
+    padding: 5px;
+    /*border: 1px solid black;*/
+}
+
+table#dataSourceFields tr:nth-child(even) {
+    background-color: #eee;
+}
+
+table#dataSourceFields tr:nth-child(odd) {
+    background-color:#fff;
+}
+
+table#dataSourceFields th	{
+    padding: 5px;
+    background-color: #393939;
+    color: white;
+    border: 1px solid black;
+}
+
+table#dataSourceFields td	{
+    padding: 5px;
+    border: 1px solid black;
+}
+
+#userInteract {
+    border-collapse: separate;
+    border-spacing: 20px ;
+}
+
+#chooseChartType td {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+#chooseChartType tr {
+    text-align: center;
+}
+
+#leftPart {
+    vertical-align: top;
+    margin-right: 30px;
+}
+#rightPart {
+    vertical-align: top;
+    padding-left: 30px;
+    margin-left: 30px;
+    border-left: 1px solid black;
+}
+.dataSourceField {
+    padding: 3px;
+    cursor: pointer;
+    border: 1px solid #a1a1a1;
+    border-radius: 5px;
+    background-color: #cccccc;
+}
+
+#myImageGlobe {
+    width: 75px;
+    height: 75px;
+    margin: 10px;
+}
+#myImageBar {
+    width: 75px;
+    height: 75px;
+}
+#myImagePie {
+    width: 75px;
+    height: 75px;
+}
+#myImageLine {
+    width: 75px;
+    height: 75px;
+}
+
+.droppable {
+    /*border: 1px solid black;*/
+    /*padding: 5px;*/
+}
+
+#dataSourceFieldsConstructor
+{
+    display:  table;
+    width:auto;
+    /*background-color:#eee;*/
+    /*border:1px solid  #666666;*/
+    border-spacing:5px;/*cellspacing:poor IE support for  this*/
+    /* border-collapse:separate;*/
+}
+
+/*.divRow*/
+/*{*/
+    /*display:table-row;*/
+    /*width:auto;*/
+    /*/!*height: 40px;*!/*/
+/*}*/
+
+/*.divCell*/
+/*{*/
+    /*/!*height: 40px;*!/*/
+    /*/!*vertical-align: middle;*!/*/
+    /*margin: 5px;*/
+    /*float:left;/!*fix for  buggy browsers*!/*/
+    /*display:table-column;*/
+    /*width:auto;*/
+    /*/!*background-color:#ccc;*!/*/
+/*}*/
+
+.border {
+    padding: 3px;
+    border: 1px solid black;
+}

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "56193f72e4b04db6b6234084",
+    "category": "категория",
+    "name": "Метеорологические наблюдения",
+    "description": "Данные приземных метеорологических наблюдений",
+    "fields": ["Nameagency", "Year", "Month", "RusFedsub", "Avtemp", "Rainfall"]
+  },
+  {
+    "id": "561955a5e4b04db6b62340ed",
+    "category": "категория",
+    "name": "Гисметео сводка",
+    "description": "Данные приземных метеорологических наблюдений",
+    "fields": ["Nameagency", "Year", "Month", "RusFedsub", "Avtemp", "Rainfall"]
+  },
+  {
+    "id": "561a21b6e4b085dd1f6b04c7",
+    "category": "категория",
+    "name": "эконом",
+    "description": "Основные показатели социально-экономического развития России (по кварталам)",
+    "fields": ["created", "source", "source_id", "provenance", "format", "updated"]
+  },
+  {
+    "id": "561a240be4b085dd1f6b04c8",
+    "category": "категория",
+    "name": "эконом",
+    "description": "Основные показатели социально-экономического развития России (по кварталам)",
+    "fields": ["Показатель", "I квартал 2012", "II квартал 2012", "III квартал 2012", "IV квартал 2012", "2012 год всего", "I квартал 2013", "II квартал 2013"]
+  },
+  {
+    "id": "561a407ae4b085dd1f6b0859",
+    "category": "категория",
+    "name": "Кафе",
+    "description": "Прибыль",
+    "fields": ["Id", "Number", "global_id", "Name", "IsNetObject", "OperatingCompany", "AdmArea", "District", "Address", "PublicPhone", "SeatsCount", "SocialPrivileges", "lon", "lat"]
+  },
+  {
+    "id": "561a298de4b085dd1f6b055e",
+    "category": "категория",
+    "name": "Прибыль",
+    "description": "Прибыль",
+    "fields": ["Муниципальные образования", "Отчет 2012 год", "Отчет 2013 год", "Оценка 2014 год", "Прогноз 2015 год 1 вариант", "Прогноз 2015 год 2 вариант", "Прогноз 2016 год 1 вариант", "Прогноз 2016 год 2 вариант", "Прогноз 2017 год 1 вариант", "Прогноз 2017 год 2 вариант"]
+  }]
