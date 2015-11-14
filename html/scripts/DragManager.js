@@ -172,6 +172,12 @@ var DragManager = new function() {
         dragObject.avatar.style.top = "";
         dragObject.avatar.style.zIndex = "";
 
+
+        document.chosenFields.push(dragObject.avatar.innerHTML);
+
+        alert("You have chosen the '" + dragObject.avatar.innerHTML + "' field in the '" + document.dataSet[document.chosenIndex].name +"' dataset. " +
+            "The field is " + dragObject.avatar.parentNode.parentNode.firstChild.innerHTML);
+
     };
     this.onDragCancel = function(dragObject) {};
 

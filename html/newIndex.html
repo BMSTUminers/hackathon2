@@ -15,7 +15,7 @@
 <body class="claro">
 <script>
 
-
+    document.chartMode = "";
     require([
                 "dijit/Menu",
                 "dijit/MenuItem",
@@ -47,7 +47,7 @@
 
                     function listColumns(index) {
                         document.getElementById("dataSetInfo").innerHTML = "<table id='dataSourceFields'> </table>";
-                        document.choosenIndex = index;
+                        document.chosenIndex = index;
 
                         domConstruct.create("span", {
                             innerHTML: "<br><label>Описание:&nbsp</label>" +
@@ -109,7 +109,23 @@
 
     document.draggedElements = new Array();
 
+    document.chosenFields = new Array();
+
     function cancelDrag() {
+
+        switch (document.chartMode) {
+            case "pie":
+                pieClick();
+                break;
+            case "bar":
+                barClick();
+                break;
+            case "line":
+                lineClick();
+                break;
+            case "map":
+                mapClick();
+        }
         for (var i = 0; i < document.draggedElements.length; i++) {
             var cElem = document.draggedElements[i].element;
             var cOld = document.draggedElements[i].old;
@@ -120,10 +136,10 @@
             cElem.style.top = cOld.top;
             cElem.style.zIndex = cOld.zIndex
         }
-    };
+    }
 
     function pieClick() {
-
+        document.chartMode = "pie";
         require([
                     "dijit/Menu",
                     "dijit/MenuItem",
