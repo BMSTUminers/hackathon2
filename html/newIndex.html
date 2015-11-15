@@ -10,6 +10,9 @@
     <script src="https://cdn.polyfill.io/v1/polyfill.js?features=Element.prototype.closest"></script>
     <script>dojoConfig = {parseOnLoad: true}</script>
     <script src="bower_components/dojo/dojo.js"></script>
+    <script type="text/javascript">
+        var api_server = "http://127.0.0.1:8081"
+    </script>
 </head>
 
 <body class="claro">
@@ -35,11 +38,18 @@
                  *
                  */
 
-                request.get("test_data/dataset.json", {
+                request.post(api_server + "/api/dataset/", {
                     // Parse data from JSON to a JavaScript object
-                    handleAs: "json"
+                    data: JSON.stringify({category: null}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    sync: true
                 }).then(function(data) {
+
                     document.dataSet = data;
+
+                    console.log(data)
 
                     function drag(ev) {
                         return false;
