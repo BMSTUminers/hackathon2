@@ -41,10 +41,6 @@
                 }).then(function(data) {
                     document.dataSet = data;
 
-                    function drag(ev) {
-                        return false;
-                    }
-
                     function listColumns(index) {
                         document.getElementById("dataSetInfo").innerHTML = "<table id='dataSourceFields'> </table>";
                         document.chosenIndex = index;
