@@ -10,11 +10,14 @@
     <script src="https://cdn.polyfill.io/v1/polyfill.js?features=Element.prototype.closest"></script>
     <script>dojoConfig = {parseOnLoad: true}</script>
     <script src="bower_components/dojo/dojo.js"></script>
+    <script type="text/javascript">
+        var api_server = "http://127.0.0.1:8081"
+    </script>
 </head>
 
 <body class="claro">
 <script>
-
+    document.queryHTTP = "http://localhost:63342/hackathon2/html/widget.html?";
     document.chartMode = "";
     require([
                 "dijit/Menu",
@@ -35,11 +38,18 @@
                  *
                  */
 
-                request.get("test_data/dataset.json", {
+                request.post(api_server + "/api/dataset/", {
                     // Parse data from JSON to a JavaScript object
-                    handleAs: "json"
+                    data: JSON.stringify({category: null}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    sync: true
                 }).then(function(data) {
-                    document.dataSet = data;
+
+                    document.dataSet = JSON.parse(data);
+
+                    console.log(data);
 
                     function listColumns(index) {
                         document.getElementById("dataSetInfo").innerHTML = "<table id='dataSourceFields'> </table>";
@@ -73,11 +83,15 @@
                     var menu = new Menu({style: "display: none;"});
 
                     document.dataSet.forEach(function (entry) {
-                        console.log(entry.name);
+                        if (entry.name != null)
+                            var dName = entry.name;
+                        else
+                            var dName = "Андрей, укажи нормальное название датасету";
+
                         var menuItem = new MenuItem({
-                            label: entry.name,
+                            label: dName,
                             onClick: function () {
-                                if (entry.name != null) {
+                                if (dName != null) {
                                     console.log(document.dataSet.indexOf(entry));
                                     listColumns(document.dataSet.indexOf(entry));
                                 }
@@ -103,9 +117,9 @@
         dragObject.avatar.rollback();
     };
 
-    document.draggedElements = new Array();
+    document.draggedElements = [];
 
-    document.chosenFields = new Array();
+    document.chosenFields = [];
 
     function cancelDrag() {
 
@@ -122,6 +136,7 @@
             case "map":
                 mapClick();
         }
+
         for (var i = 0; i < document.draggedElements.length; i++) {
             var cElem = document.draggedElements[i].element;
             var cOld = document.draggedElements[i].old;
@@ -135,6 +150,8 @@
     }
 
     function pieClick() {
+
+        document.pieVars = {};
         document.chartMode = "pie";
         require([
                     "dijit/Menu",
@@ -151,13 +168,13 @@
                     document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Переменная №1</td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+                            {innerHTML: '<td> Функция </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
 
                             },
                             "ConstructorTable", "last");
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Переменная №2</td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+                            {innerHTML: '<td> Переменная </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
 
                             },
                             "ConstructorTable", "last");
@@ -166,17 +183,159 @@
                 });
     }
 
-//    <span class="droppable">
-//            Перетащите колонку сюда
-//    </span>
+    function barClick() {
 
-//    DragManager.onDragEnd = function(dragObject, dropElem) {
-//        dragObject.elem.style.display = 'none';
-//        dropElem.classList.add('computer-smile');
-//        setTimeout(function() {
-//            dropElem.classList.remove('computer-smile');
-//        }, 200);
-//    };
+        document.barVars = {};
+        document.chartMode = "bar";
+        require([
+                    "dijit/Menu",
+                    "dijit/MenuItem",
+                    "dijit/form/ComboButton",
+                    "dojo/dom-construct",
+                    "dojo/_base/array",
+                    "dojo/domReady!",
+                    "dojo/_base/window",
+                    "dojo/request"
+                ],
+
+                function (Menu, MenuItem, ComboButton, domConstruct, array, domReady, window, request) {
+                    document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Функция </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Переменная </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+
+                });
+    }
+
+    function lineClick() {
+
+        document.lineVars = {};
+        document.chartMode = "line";
+        require([
+                    "dijit/Menu",
+                    "dijit/MenuItem",
+                    "dijit/form/ComboButton",
+                    "dojo/dom-construct",
+                    "dojo/_base/array",
+                    "dojo/domReady!",
+                    "dojo/_base/window",
+                    "dojo/request"
+                ],
+
+                function (Menu, MenuItem, ComboButton, domConstruct, array, domReady, window, request) {
+                    document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Функция </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Переменная </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+                });
+    }
+
+    function mapClick() {
+
+        document.mapVars = {};
+        document.mapVars.fields = [];
+        document.chartMode = "map";
+        require([
+                    "dijit/Menu",
+                    "dijit/MenuItem",
+                    "dijit/form/ComboButton",
+                    "dojo/dom-construct",
+                    "dojo/_base/array",
+                    "dojo/domReady!",
+                    "dojo/_base/window",
+                    "dojo/request"
+                ],
+
+                function (Menu, MenuItem, ComboButton, domConstruct, array, domReady, window, request) {
+                    document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Широта </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Долгота </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+
+                    domConstruct.create("tr",
+                            {innerHTML: '<td> Информация </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                            },
+                            "ConstructorTable", "last");
+                });
+    }
+
+    function widgetBuild() {
+        switch (document.chartMode) {
+            case "pie":
+                if (document.pieVars.arg && document.pieVars.func) {
+                    document.queryHTTP += "chartType=" + document.chartMode + "&";
+                    document.queryHTTP += "datasetID=" + document.dataSet[document.chosenIndex].id.toString() + "&";
+                    document.queryHTTP += "func=" + document.pieVars.func + "&";
+                    document.queryHTTP += "arg=" + document.pieVars.arg;
+
+                    document.getElementById("widget").innerHTML += document.queryHTTP;
+                }
+                else
+                    alert("Пожалуйста, заполните все поля");
+                break;
+            case "bar":
+                if (document.barVars.arg && document.pieVars.func) {
+                    document.queryHTTP += "chartType=" + document.chartMode + "&";
+                    document.queryHTTP += "datasetID=" + document.dataSet[document.chosenIndex].id.toString() + "&";
+                    document.queryHTTP += "func=" + document.pieVars.func + "&";
+                    document.queryHTTP += "arg=" + document.pieVars.arg;
+
+                    document.getElementById("widget").innerHTML += document.queryHTTP;
+                }
+                else
+                    alert("Пожалуйста, заполните все поля");
+                break;
+            case "line":
+                if (document.lineVars.arg && document.pieVars.func) {
+                    document.queryHTTP += "chartType=" + document.chartMode + "&";
+                    document.queryHTTP += "datasetID=" + document.dataSet[document.chosenIndex].id.toString() + "&";
+                    document.queryHTTP += "func=" + document.pieVars.func + "&";
+                    document.queryHTTP += "arg=" + document.pieVars.arg;
+
+                    document.getElementById("widget").innerHTML += document.queryHTTP;
+                }
+                else
+                    alert("Пожалуйста, заполните все поля");
+                break;
+            case "map":
+                if (document.mapVars.lat && document.mapVars.lon && document.mapVars.fields.length > 0) {
+
+                }
+                else
+                    alert("Пожалуйста, заполните все поля");
+        }
+    }
+
+
 </script>
 
 <div id="mainContainer">
@@ -206,13 +365,13 @@
                                 <input type="image" id="myImagePie" onclick='pieClick()' src="images/pie-chart-3.svg" />
                             </td>
                             <td>
-                                <input type="image" id="myImageLine" onclick='pieClick()' src="images/2000px-ScientificGraphSpeedVsTime.svg.png" />
+                                <input type="image" id="myImageLine" onclick='lineClick()' src="images/2000px-ScientificGraphSpeedVsTime.svg.png" />
                             </td>
                             <td>
-                                <input type="image" id="myImageBar" onclick='pieClick()' src="images/bar-chart.jpg" />
+                                <input type="image" id="myImageBar" onclick='barClick()' src="images/bar-chart.jpg" />
                             </td>
                             <td>
-                                <input type="image" id="myImageGlobe" onclick='pieClick()' src="images/3d-Earth-Globe.png" />
+                                <input type="image" id="myImageGlobe" onclick='mapClick()' src="images/3d-Earth-Globe.png" />
                             </td>
                         </tr>
                         <tr>
@@ -237,6 +396,13 @@
                     </div>
 
                     <button onclick="cancelDrag()"> Отмена </button>
+                    <br> <br>
+
+                    <button onclick="widgetBuild()"> Предпросмотр виджета </button>
+
+                    <div id="widget">
+                        Пока что еще не работает <br>
+                    </div>
 
                 </div>
             </td>

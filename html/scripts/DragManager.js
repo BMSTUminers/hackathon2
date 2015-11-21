@@ -172,11 +172,57 @@ var DragManager = new function() {
         dragObject.avatar.style.top = "";
         dragObject.avatar.style.zIndex = "";
 
-
         document.chosenFields.push(dragObject.avatar.innerHTML);
 
-        alert("You have chosen the '" + dragObject.avatar.innerHTML + "' field in the '" + document.dataSet[document.chosenIndex].name +"' dataset. " +
-            "The field is " + dragObject.avatar.parentNode.parentNode.firstChild.innerHTML);
+        var chosenChartField = dragObject.avatar.parentNode.parentNode.firstChild.innerHTML;
+        var chosenField = dragObject.avatar.innerHTML;
+        //var datasetId = document.dataSet[document.chosenIndex].id;
+        //var datasetName = document.dataSet[document.chosenIndex].name;
+
+        alert("You have chosen the '" + chosenField + "' field in the '" + document.dataSet[document.chosenIndex].name +"' dataset. " +
+            "The field is " + chosenChartField);
+
+        switch (document.chartMode) {
+            case "pie":
+                if (chosenChartField.trim() === "Функция")
+                    document.pieVars.func = chosenField;
+                else
+                    document.pieVars.arg = chosenField;
+                break;
+            case "bar":
+                if (chosenChartField.trim() === "Функция")
+                    document.barVars.func = chosenField;
+                else
+                    document.barVars.arg = chosenField;
+                break;
+            case "line":
+                if (chosenChartField.trim() === "Функция")
+                    document.lineVars.func = chosenField;
+                else
+                    document.lineVars.arg = chosenField;
+                break;
+            case "map":
+                if (chosenChartField.trim() === "Широта")
+                    document.mapVars.lat = chosenField;
+                else if (chosenChartField.trim() === "Долгота")
+                    document.mapVars.lon = chosenField;
+                else
+                    document.mapVars.fields.push(chosenField);
+
+                if (dragObject.avatar.parentNode.parentNode.rowIndex + 1 == dragObject.avatar.parentNode.parentNode.parentNode.children.length) {
+                    require([
+                            "dojo/dom-construct",
+                        ],
+
+                        function (domConstruct) {
+                            domConstruct.create("tr",
+                                {innerHTML: '<td> Информация </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+
+                                },
+                                "ConstructorTable", "last");
+                        });
+                }
+        }
 
     };
     this.onDragCancel = function(dragObject) {};
