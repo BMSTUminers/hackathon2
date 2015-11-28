@@ -28,13 +28,24 @@ var create_chain = function(dataset_id, columns)
 	});
 }
 
-var get_preview = function()
+var get_preview = function(callback)
 {
 	$.getJSON( "/api/chain/" + document.chain_id + "/execute?page=1&pageSize=10", function(data)
 	{
 		document.current_data = data
+		callback()
 	})
 }
+
+var get_full = function(callback)
+{
+	$.getJSON( "/api/chain/" + document.chain_id + "/execute", function(data)
+	{
+		document.current_data = data
+		callback()
+	})
+}
+
 
 var set_filters = function(dataset_id, columns, filters)
 {
