@@ -169,14 +169,14 @@
                     document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Функция </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+                            {innerHTML: '<td> Y: </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
 
                             },
                             "ConstructorTable", "last");
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Переменная </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
-
+                            {innerHTML: '<td> X: </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'+
+                            '<td style="padding-left: 30px"> <button onclick="cancelDrag()"> Сброс </button> </td>'
                             },
                             "ConstructorTable", "last");
 
@@ -203,14 +203,14 @@
                     document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Функция </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+                            {innerHTML: '<td> Y: </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
 
                             },
                             "ConstructorTable", "last");
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Переменная </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
-
+                            {innerHTML: '<td> X: </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>' +
+                            '<td style="padding-left: 30px"> <button onclick="cancelDrag()"> Сброс </button> </td>'
                             },
                             "ConstructorTable", "last");
 
@@ -237,13 +237,14 @@
                     document.getElementById("Constructor").innerHTML = "<table id='ConstructorTable'> </table>";
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Функция </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+                            {innerHTML: '<td> Y: </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
 
                             },
                             "ConstructorTable", "last");
 
                     domConstruct.create("tr",
-                            {innerHTML: '<td> Переменная </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>'
+                            {innerHTML: '<td> X: </td>' + '<td class="droppable">' + '<span class="border">' + 'Перетащите элемент сюда' + '</span>' + '</td>' +
+                            '<td style="padding-left: 30px"> <button onclick="cancelDrag()"> Сброс </button> </td>'
 
                             },
                             "ConstructorTable", "last");
@@ -289,6 +290,10 @@
                 });
     }
 
+    function getRef() {
+        document.getElementById("wRef").innerHTML = document.queryHTTP;
+    }
+
     function widgetBuild() {
         document.queryHTTP = "http://localhost:63342/hackathon2/html/widget.html?";
         switch (document.chartMode) {
@@ -301,8 +306,10 @@
                     document.queryHTTP += "width=" + document.getElementById("widgetWidth").value + "&";
                     document.queryHTTP += "height=" + document.getElementById("widgetHeight").value;
 
-                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ document.getElementById("widgetWidth").value +
-                            '" height="' + document.getElementById("widgetHeight").value + '" align="left" </iframe>';
+                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ ((parseInt(document.getElementById("widgetWidth").value)) + 20).toString() +
+                            '" height="' + ((parseInt(document.getElementById("widgetHeight").value)) + 20).toString() + '" align="left" </iframe>';
+
+                    document.getElementById("btnAppear").innerHTML = '<button onclick="getRef()"> Получить ссылку </button>';
                 }
                 else
                     alert("Пожалуйста, заполните все поля");
@@ -316,8 +323,10 @@
                     document.queryHTTP += "width=" + document.getElementById("widgetWidth").value + "&";
                     document.queryHTTP += "height=" + document.getElementById("widgetHeight").value;
 
-                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ document.getElementById("widgetWidth").value +
-                            '" height="' + document.getElementById("widgetHeight").value + '" align="left" </iframe>';
+                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ ((parseInt(document.getElementById("widgetWidth").value)) + 20).toString() +
+                            '" height="' + ((parseInt(document.getElementById("widgetHeight").value)) + 20).toString() + '" align="left" </iframe>';
+
+                    document.getElementById("btnAppear").innerHTML = '<button onclick="getRef()"> Получить ссылку </button>';
 //                    document.getElementById("widget").innerHTML = document.queryHTTP;
                 }
                 else
@@ -332,8 +341,10 @@
                     document.queryHTTP += "width=" + document.getElementById("widgetWidth").value + "&";
                     document.queryHTTP += "height=" + document.getElementById("widgetHeight").value;
 
-                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ document.getElementById("widgetWidth").value +
-                            '" height="' + document.getElementById("widgetHeight").value + '" align="left" </iframe>';
+                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ ((parseInt(document.getElementById("widgetWidth").value)) + 20).toString() +
+                            '" height="' + ((parseInt(document.getElementById("widgetHeight").value)) + 20).toString() + '" align="left" </iframe>';
+
+                    document.getElementById("btnAppear").innerHTML = '<button onclick="getRef()"> Получить ссылку </button>';
                 }
                 else
                     alert("Пожалуйста, заполните все поля");
@@ -369,7 +380,9 @@
                 </div>
             </td>
             <td id="rightPart">
-                <div>
+                <div id="rightPartContainer">
+                    <span style="font-size:32px"> Конструктор виджета </span>
+                    <br>
                     <table id="chooseChartType">
                         <label> Выберите тип графического отображения: </label>
                         <tr>
@@ -404,23 +417,24 @@
 
                     <br>
                     <div id="Constructor">
-
                     </div>
 
-                    <button onclick="cancelDrag()"> Сброс ( разместить справа ) </button>
-                    <br> <br>
+                    <br>
 
                     <label>Установите параметры виджета: </label>
                     <br>
-                    <input type="text" id="widgetWidth" value="640"> Ширина
-                    <br>
-                    <input style="margin-top: 5px" type="text" id="widgetHeight" value="480"> Высота
+                    Ширина: <input style="margin-right: 5px" type="text" id="widgetWidth" value="640">
+                    Высота: <input  type="text" id="widgetHeight" value="240">
                     <br><br>
-                    <button onclick="widgetBuild()"> Предпросмотр виджета </button>
+                    <button onclick="widgetBuild()"> Предпросмотр виджета </button> <span id="btnAppear">  </span>
+                    <br>
+                    <div id="wRef">
 
-                    <div id="widget">
-                        Пока что еще не работает <br>
                     </div>
+                    <div id="widget">
+
+                    </div>
+
 
                 </div>
             </td>

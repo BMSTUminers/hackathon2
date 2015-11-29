@@ -179,24 +179,24 @@ var DragManager = new function() {
         //var datasetId = document.dataSet[document.chosenIndex].id;
         //var datasetName = document.dataSet[document.chosenIndex].name;
 
-        alert("You have chosen the '" + chosenField + "' field in the '" + document.dataSet[document.chosenIndex].name +"' dataset. " +
-            "The field is " + chosenChartField);
+        //alert("You have chosen the '" + chosenField + "' field in the '" + document.dataSet[document.chosenIndex].name +"' dataset. " +
+        //    "The field is " + chosenChartField);
 
         switch (document.chartMode) {
             case "pie":
-                if (chosenChartField.trim() === "Функция")
+                if (chosenChartField.trim() === "Y:")
                     document.pieVars.func = chosenField;
                 else
                     document.pieVars.arg = chosenField;
                 break;
             case "bar":
-                if (chosenChartField.trim() === "Функция")
+                if (chosenChartField.trim() === "Y:")
                     document.barVars.func = chosenField;
                 else
                     document.barVars.arg = chosenField;
                 break;
             case "line":
-                if (chosenChartField.trim() === "Функция")
+                if (chosenChartField.trim() === "Y:")
                     document.lineVars.func = chosenField;
                 else
                     document.lineVars.arg = chosenField;
