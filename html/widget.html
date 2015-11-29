@@ -15,15 +15,36 @@
             console.log(params);
             switch (params.chartType) {
                 case "bar":
-                    renderBarChart(params.width, params.height, params.id);
+                    var width = params.width;
+                    var height = params.height;
+                    var datasetID = params.datasetID;
+                    var func = params.func;
+                    var arg = params.arg;
+                    renderBarChart(width, height, datasetID, func, arg);
                     break;
                 case "line":
-                    renderLineChart(params.width, params.height, params.id);
+                    var width = params.width;
+                    var height = params.height;
+                    var datasetID = params.datasetID;
+                    var func = params.func;
+                    var arg = params.arg;
+                    renderLineChart(width, height, datasetID, func, arg);
                     break;
                 case "pie":
-                    renderPieChart(params.width, params.height, params.id);
+                    var width = params.width;
+                    var height = params.height;
+                    var datasetID = params.datasetID;
+                    var func = params.func;
+                    var arg = params.arg;
+                    renderPieChart(width, height, datasetID, func, arg);
                     break;
                 case "map":
+                    var width = params.width;
+                    var height = params.height;
+                    var datasetID = params.datasetID;
+                    var lat = params.lat;
+                    var lon = params.lon;
+                    var mapVars = params.mapVars.split(',');
                     renderMapChart(params.width, params.height, params.id);
                     break;
                 default:
@@ -31,7 +52,7 @@
             }
         });
 
-        function renderBarChart(width, height, id) {
+        function renderBarChart(width, height, datasetID, func, arg) {
             require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
 
                 document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
@@ -129,7 +150,105 @@
             });
         }
 
-        function renderLineChart(width, height, id) {
+        function universalRenderBarChart(width, height, datasetID, func, arg) {
+            require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
+
+                document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
+                        width + "px;" + "height: " + height + "px;" + "'></div>";
+
+                xhr.get("test_data/myfile.csv", {
+                    handleAs: "text"
+                }).then(function(data) {
+                    var lines = data.split(/\r?\n/);
+                    document.labels = new Array(lines.length - 1);
+                    document.rainFlow = new Array(lines.length - 1);
+                    document.avgTemp = new Array(lines.length - 1);
+                    require(["dojo/_base/array"], function(array) {
+                        /** Rest of code */
+                        array.forEach(lines, function(line, i) {
+                            var cells = line.split(',');
+                            if (i!=0) {
+                                document.labels[i-1] = cells[3].substring(1, cells[3].length - 1);
+                                document.rainFlow[i-1] = cells[5].substring(1, cells[5].length - 1);
+                                document.avgTemp[i-1] = cells[4].substring(1, cells[4].length - 1);
+                            }
+                        });
+                    });
+                    console.log();
+                    require(["dojox/charting/Chart2D",
+                                "dojox/charting/plot2d/Columns",
+                                "dojox/charting/themes/Wetland",
+                                "dojox/charting/action2d/Highlight",
+                                "dojox/charting/action2d/Tooltip",
+                                "dojox/charting/themes/CubanShirts",
+                                "dojox/charting/widget/SelectableLegend",
+                                "dojox/charting/widget/Legend",
+                                "dojo/ready"],
+
+                            function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
+                                ready(function () {
+                                    var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
+                                    c.addPlot("default", {
+                                        type: "Columns",
+                                        tension: 1,
+                                        gap: 2
+                                    });
+
+                                    var jsonLabels = new Array(document.labels.length);
+                                    var jsonBars = new Array(document.labels.length);
+
+                                    var myRainBarStyle = {
+                                        stroke: {
+                                            color: "blue",
+                                            width: 1
+                                        },
+                                        fill: "lightblue"
+                                    };
+
+                                    for (i = 0; i < document.labels.length; i++) {
+                                        var mylabel = {
+                                            value: i+1,
+                                            text: document.labels[i]
+                                        };
+
+                                        var myRainBar = {
+                                            y: parseInt(document.rainFlow[i]),
+                                            x: i+1,
+                                            tooltip: "Rainflow statistics: " + document.labels[i],
+                                            text: "I don't know whether it is important"
+                                        };
+
+                                        jsonBars[i] = myRainBar;
+                                        jsonLabels[i] = mylabel;
+                                    }
+
+                                    console.log();
+
+                                    c.addSeries("hjhjj 1", jsonBars, myRainBarStyle);
+
+                                    c.addAxis("x", {
+                                        labels: jsonLabels,
+                                        fixLower: "major",
+                                        fixUpper: "major"
+                                    });
+                                    c.addAxis("y", {
+                                        vertical: true,
+                                        fixLower: "major",
+                                        fixUpper: "major",
+                                        min: 0
+                                    });
+                                    c.setTheme(dojox.charting.themes.Wetland);
+
+                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
+                                    c.render();
+                                });
+                            });
+                });
+            });
+        }
+
+        function renderLineChart(width, height, datasetID, func, arg) {
             require(["dojo/dom", "dojo/request", "dojo/json",
                         "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
                     function(dom, request, JSON, array, domConstruct){
@@ -189,7 +308,7 @@
                     });
         }
 
-        function renderPieChart(width, height, id) {
+        function renderPieChart(width, height, datasetID, func, arg) {
             require(["dojo/dom", "dojo/request", "dojo/json",
                         "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
                     function(dom, request, JSON, array, domConstruct){

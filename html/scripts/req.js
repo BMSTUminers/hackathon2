@@ -26,7 +26,7 @@ var create_chain = function(dataset_id, columns)
 		success: foo,
 		dataType: 'json'
 	});
-}
+};
 
 var get_preview = function()
 {
@@ -34,7 +34,7 @@ var get_preview = function()
 	{
 		document.current_data = data
 	})
-}
+};
 
 var set_filters = function(dataset_id, columns, filters)
 {
@@ -47,7 +47,7 @@ var set_filters = function(dataset_id, columns, filters)
     var foo =  function( data ) {
 		document.chain_id = data.id;
 		get_preview();
-	}
+	};
 
 	$.ajax({
 		type: "POST",
@@ -60,10 +60,10 @@ var set_filters = function(dataset_id, columns, filters)
 		success: foo,
 		dataType: 'json'
 	});
-}
+};
 
 var remove_chain = function()
 {
 	$.get( api_server + "/api/chain/" + document.chain_id + "/delete")
-}
+};
 
