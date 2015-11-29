@@ -3,7 +3,11 @@
 
 var create_chain = function(dataset_id, columns)
 {
+	$.ajaxSetup({
+		async: false
+	});
 
+	document.api_server = "http://127.0.0.1:8081"
 	var default_chain = [{ "name": "loader", "params": {
         "datasourceId": dataset_id,
         "columns": columns
@@ -11,8 +15,8 @@ var create_chain = function(dataset_id, columns)
     }];
 
 	var foo =  function( data ) {
-		document.chain_id = data.id
-		get_preview()
+		document.chain_id = data.id;
+		get_full();
 	}
 
 	$.ajax({
@@ -21,7 +25,7 @@ var create_chain = function(dataset_id, columns)
 			'Accept': 'application/json',
 			'Content-Type': 'application/json' 
 		},
-		url: api_server + "/api/chain/create",
+		url: document.api_server + "/api/chain/create",
 		data: JSON.stringify(default_chain),
 		success: foo,
 		dataType: 'json'
@@ -30,19 +34,22 @@ var create_chain = function(dataset_id, columns)
 
 var get_preview = function(callback)
 {
-	$.getJSON( "/api/chain/" + document.chain_id + "/execute?page=1&pageSize=10", function(data)
+	$.getJSON( api_server + "/api/chain/" + document.chain_id + "/execute?page=1&pageSize=10", function(data)
 	{
-		document.current_data = data
+		document.current_data = data;
 		callback()
 	})
 };
 
 var get_full = function(callback)
 {
-	$.getJSON( "/api/chain/" + document.chain_id + "/execute", function(data)
+	document.api_server = "http://127.0.0.1:8081";
+	$.getJSON( document.api_server + "/api/chain/" + document.chain_id + "/execute", function(data)
 	{
-		document.current_data = data
-		callback()
+		document.current_data = data;
+		document.dataTransferred = true;
+		//console.log(data);
+
 	})
 }
 

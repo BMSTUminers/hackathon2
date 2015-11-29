@@ -19,7 +19,6 @@
 
 <body class="claro">
 <script>
-    document.queryHTTP = "http://localhost:63342/hackathon2/html/widget.html?";
     document.chartMode = "";
     require([
                 "dijit/Menu",
@@ -291,39 +290,50 @@
     }
 
     function widgetBuild() {
+        document.queryHTTP = "http://localhost:63342/hackathon2/html/widget.html?";
         switch (document.chartMode) {
             case "pie":
                 if (document.pieVars.arg && document.pieVars.func) {
                     document.queryHTTP += "chartType=" + document.chartMode + "&";
                     document.queryHTTP += "datasetID=" + document.dataSet[document.chosenIndex].id.toString() + "&";
                     document.queryHTTP += "func=" + document.pieVars.func + "&";
-                    document.queryHTTP += "arg=" + document.pieVars.arg;
+                    document.queryHTTP += "arg=" + document.pieVars.arg + "&";
+                    document.queryHTTP += "width=" + document.getElementById("widgetWidth").value + "&";
+                    document.queryHTTP += "height=" + document.getElementById("widgetHeight").value;
 
-                    document.getElementById("widget").innerHTML += document.queryHTTP;
+                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ document.getElementById("widgetWidth").value +
+                            '" height="' + document.getElementById("widgetHeight").value + '" align="left" </iframe>';
                 }
                 else
                     alert("Пожалуйста, заполните все поля");
                 break;
             case "bar":
-                if (document.barVars.arg && document.pieVars.func) {
+                if (document.barVars.arg && document.barVars.func) {
                     document.queryHTTP += "chartType=" + document.chartMode + "&";
                     document.queryHTTP += "datasetID=" + document.dataSet[document.chosenIndex].id.toString() + "&";
-                    document.queryHTTP += "func=" + document.pieVars.func + "&";
-                    document.queryHTTP += "arg=" + document.pieVars.arg;
+                    document.queryHTTP += "func=" + document.barVars.func + "&";
+                    document.queryHTTP += "arg=" + document.barVars.arg + "&";
+                    document.queryHTTP += "width=" + document.getElementById("widgetWidth").value + "&";
+                    document.queryHTTP += "height=" + document.getElementById("widgetHeight").value;
 
-                    document.getElementById("widget").innerHTML += document.queryHTTP;
+                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ document.getElementById("widgetWidth").value +
+                            '" height="' + document.getElementById("widgetHeight").value + '" align="left" </iframe>';
+//                    document.getElementById("widget").innerHTML = document.queryHTTP;
                 }
                 else
                     alert("Пожалуйста, заполните все поля");
                 break;
             case "line":
-                if (document.lineVars.arg && document.pieVars.func) {
+                if (document.lineVars.arg && document.lineVars.func) {
                     document.queryHTTP += "chartType=" + document.chartMode + "&";
                     document.queryHTTP += "datasetID=" + document.dataSet[document.chosenIndex].id.toString() + "&";
-                    document.queryHTTP += "func=" + document.pieVars.func + "&";
-                    document.queryHTTP += "arg=" + document.pieVars.arg;
+                    document.queryHTTP += "func=" + document.lineVars.func + "&";
+                    document.queryHTTP += "arg=" + document.lineVars.arg + "&";
+                    document.queryHTTP += "width=" + document.getElementById("widgetWidth").value + "&";
+                    document.queryHTTP += "height=" + document.getElementById("widgetHeight").value;
 
-                    document.getElementById("widget").innerHTML += document.queryHTTP;
+                    document.getElementById("widget").innerHTML = '<iframe src="' + document.queryHTTP + '" width="'+ document.getElementById("widgetWidth").value +
+                            '" height="' + document.getElementById("widgetHeight").value + '" align="left" </iframe>';
                 }
                 else
                     alert("Пожалуйста, заполните все поля");
@@ -397,14 +407,14 @@
 
                     </div>
 
-                    <button onclick="cancelDrag()"> Отмена </button>
+                    <button onclick="cancelDrag()"> Сброс ( разместить справа ) </button>
                     <br> <br>
 
                     <label>Установите параметры виджета: </label>
                     <br>
-                    <input type="text" id="width" value="640"> Ширина
+                    <input type="text" id="widgetWidth" value="640"> Ширина
                     <br>
-                    <input style="margin-top: 5px" type="text" id="height" value="480"> Высота
+                    <input style="margin-top: 5px" type="text" id="widgetHeight" value="480"> Высота
                     <br><br>
                     <button onclick="widgetBuild()"> Предпросмотр виджета </button>
 

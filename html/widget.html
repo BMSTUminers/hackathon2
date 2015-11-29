@@ -6,6 +6,8 @@
 
     <script>dojoConfig = {parseOnLoad: true}</script>
     <script src="bower_components/dojo/dojo.js"></script>
+    <script src = "scripts/req.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
 
     <script>
         require([
@@ -20,7 +22,7 @@
                     var datasetID = params.datasetID;
                     var func = params.func;
                     var arg = params.arg;
-                    renderBarChart(width, height, datasetID, func, arg);
+                    universalRenderBarChart(width, height, datasetID, func, arg);
                     break;
                 case "line":
                     var width = params.width;
@@ -52,103 +54,103 @@
             }
         });
 
-        function renderBarChart(width, height, datasetID, func, arg) {
-            require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
-
-                document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
-                        width + "px;" + "height: " + height + "px;" + "'></div>";
-
-                xhr.get("test_data/myfile.csv", {
-                    handleAs: "text"
-                }).then(function(data) {
-                    var lines = data.split(/\r?\n/);
-                    document.labels = new Array(lines.length - 1);
-                    document.rainFlow = new Array(lines.length - 1);
-                    document.avgTemp = new Array(lines.length - 1);
-                    require(["dojo/_base/array"], function(array) {
-                        /** Rest of code */
-                        array.forEach(lines, function(line, i) {
-                            var cells = line.split(',');
-                            if (i!=0) {
-                                document.labels[i-1] = cells[3].substring(1, cells[3].length - 1);
-                                document.rainFlow[i-1] = cells[5].substring(1, cells[5].length - 1);
-                                document.avgTemp[i-1] = cells[4].substring(1, cells[4].length - 1);
-                            }
-                        });
-                    });
-                    console.log();
-                    require(["dojox/charting/Chart2D",
-                                "dojox/charting/plot2d/Columns",
-                                "dojox/charting/themes/Wetland",
-                                "dojox/charting/action2d/Highlight",
-                                "dojox/charting/action2d/Tooltip",
-                                "dojox/charting/themes/CubanShirts",
-                                "dojox/charting/widget/SelectableLegend",
-                                "dojox/charting/widget/Legend",
-                                "dojo/ready"],
-
-                            function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
-                                ready(function () {
-                                    var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
-                                    c.addPlot("default", {
-                                        type: "Columns",
-                                        tension: 1,
-                                        gap: 2
-                                    });
-
-                                    var jsonLabels = new Array(document.labels.length);
-                                    var jsonBars = new Array(document.labels.length);
-
-                                    var myRainBarStyle = {
-                                        stroke: {
-                                            color: "blue",
-                                            width: 1
-                                        },
-                                        fill: "lightblue"
-                                    };
-
-                                    for (i = 0; i < document.labels.length; i++) {
-                                        var mylabel = {
-                                            value: i+1,
-                                            text: document.labels[i]
-                                        };
-
-                                        var myRainBar = {
-                                            y: parseInt(document.rainFlow[i]),
-                                            x: i+1,
-                                            tooltip: "Rainflow statistics: " + document.labels[i],
-                                            text: "I don't know whether it is important"
-                                        };
-
-                                        jsonBars[i] = myRainBar;
-                                        jsonLabels[i] = mylabel;
-                                    }
-
-                                    console.log();
-
-                                    c.addSeries("hjhjj 1", jsonBars, myRainBarStyle);
-
-                                    c.addAxis("x", {
-                                        labels: jsonLabels,
-                                        fixLower: "major",
-                                        fixUpper: "major"
-                                    });
-                                    c.addAxis("y", {
-                                        vertical: true,
-                                        fixLower: "major",
-                                        fixUpper: "major",
-                                        min: 0
-                                    });
-                                    c.setTheme(dojox.charting.themes.Wetland);
-
-                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
-                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
-                                    c.render();
-                                });
-                            });
-                });
-            });
-        }
+//        function renderBarChart(width, height, datasetID, func, arg) {
+//            require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
+//
+//                document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
+//                        width + "px;" + "height: " + height + "px;" + "'></div>";
+//
+//                xhr.get("test_data/myfile.csv", {
+//                    handleAs: "text"
+//                }).then(function(data) {
+//                    var lines = data.split(/\r?\n/);
+//                    document.labels = new Array(lines.length - 1);
+//                    document.rainFlow = new Array(lines.length - 1);
+//                    document.avgTemp = new Array(lines.length - 1);
+//                    require(["dojo/_base/array"], function(array) {
+//                        /** Rest of code */
+//                        array.forEach(lines, function(line, i) {
+//                            var cells = line.split(',');
+//                            if (i!=0) {
+//                                document.labels[i-1] = cells[3].substring(1, cells[3].length - 1);
+//                                document.rainFlow[i-1] = cells[5].substring(1, cells[5].length - 1);
+//                                document.avgTemp[i-1] = cells[4].substring(1, cells[4].length - 1);
+//                            }
+//                        });
+//                    });
+//                    console.log();
+//                    require(["dojox/charting/Chart2D",
+//                                "dojox/charting/plot2d/Columns",
+//                                "dojox/charting/themes/Wetland",
+//                                "dojox/charting/action2d/Highlight",
+//                                "dojox/charting/action2d/Tooltip",
+//                                "dojox/charting/themes/CubanShirts",
+//                                "dojox/charting/widget/SelectableLegend",
+//                                "dojox/charting/widget/Legend",
+//                                "dojo/ready"],
+//
+//                            function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
+//                                ready(function () {
+//                                    var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
+//                                    c.addPlot("default", {
+//                                        type: "Columns",
+//                                        tension: 1,
+//                                        gap: 2
+//                                    });
+//
+//                                    var jsonLabels = new Array(document.labels.length);
+//                                    var jsonBars = new Array(document.labels.length);
+//
+//                                    var myRainBarStyle = {
+//                                        stroke: {
+//                                            color: "blue",
+//                                            width: 1
+//                                        },
+//                                        fill: "lightblue"
+//                                    };
+//
+//                                    for (i = 0; i < document.labels.length; i++) {
+//                                        var mylabel = {
+//                                            value: i+1,
+//                                            text: document.labels[i]
+//                                        };
+//
+//                                        var myRainBar = {
+//                                            y: parseInt(document.rainFlow[i]),
+//                                            x: i+1,
+//                                            tooltip: "Rainflow statistics: " + document.labels[i],
+//                                            text: "I don't know whether it is important"
+//                                        };
+//
+//                                        jsonBars[i] = myRainBar;
+//                                        jsonLabels[i] = mylabel;
+//                                    }
+//
+//                                    console.log();
+//
+//                                    c.addSeries("hjhjj 1", jsonBars, myRainBarStyle);
+//
+//                                    c.addAxis("x", {
+//                                        labels: jsonLabels,
+//                                        fixLower: "major",
+//                                        fixUpper: "major"
+//                                    });
+//                                    c.addAxis("y", {
+//                                        vertical: true,
+//                                        fixLower: "major",
+//                                        fixUpper: "major",
+//                                        min: 0
+//                                    });
+//                                    c.setTheme(dojox.charting.themes.Wetland);
+//
+//                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+//                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
+//                                    c.render();
+//                                });
+//                            });
+//                });
+//            });
+//        }
 
         function universalRenderBarChart(width, height, datasetID, func, arg) {
             require(["dojo/request/xhr", "dojo/dom-construct","dojo/domReady!"], function(xhr, domConstruct, domReady) {
@@ -156,95 +158,96 @@
                 document.getElementById("Widget").innerHTML = "<div id='reportTotalsChartDiv' style='width:" +
                         width + "px;" + "height: " + height + "px;" + "'></div>";
 
-                xhr.get("test_data/myfile.csv", {
-                    handleAs: "text"
-                }).then(function(data) {
-                    var lines = data.split(/\r?\n/);
-                    document.labels = new Array(lines.length - 1);
-                    document.rainFlow = new Array(lines.length - 1);
-                    document.avgTemp = new Array(lines.length - 1);
-                    require(["dojo/_base/array"], function(array) {
-                        /** Rest of code */
-                        array.forEach(lines, function(line, i) {
-                            var cells = line.split(',');
-                            if (i!=0) {
-                                document.labels[i-1] = cells[3].substring(1, cells[3].length - 1);
-                                document.rainFlow[i-1] = cells[5].substring(1, cells[5].length - 1);
-                                document.avgTemp[i-1] = cells[4].substring(1, cells[4].length - 1);
-                            }
-                        });
+                var columns = arg + ',' + func;
+
+                create_chain(datasetID, columns);
+
+//                document.labels = new Array(document.current_data.page.size);
+//                document.rainFlow = new Array(document.current_data.page.size);
+//                document.avgTemp = new Array(document.current_data.page.size);
+
+                document.arguments = new Array(document.current_data.page.length);
+                document.values = new Array(document.current_data.page.length);
+
+                require(["dojo/_base/array"], function(array) {
+                    /** Rest of code */
+                    array.forEach(document.current_data.page, function(pair, i) {
+                        document.arguments[i] = pair[0];
+                        document.values[i] = pair[1];
                     });
-                    console.log();
-                    require(["dojox/charting/Chart2D",
-                                "dojox/charting/plot2d/Columns",
-                                "dojox/charting/themes/Wetland",
-                                "dojox/charting/action2d/Highlight",
-                                "dojox/charting/action2d/Tooltip",
-                                "dojox/charting/themes/CubanShirts",
-                                "dojox/charting/widget/SelectableLegend",
-                                "dojox/charting/widget/Legend",
-                                "dojo/ready"],
+                });
 
-                            function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
-                                ready(function () {
-                                    var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
-                                    c.addPlot("default", {
-                                        type: "Columns",
-                                        tension: 1,
-                                        gap: 2
-                                    });
+                console.log();
+                require(["dojox/charting/Chart2D",
+                            "dojox/charting/plot2d/Columns",
+                            "dojox/charting/themes/Wetland",
+                            "dojox/charting/action2d/Highlight",
+                            "dojox/charting/action2d/Tooltip",
+                            "dojox/charting/themes/CubanShirts",
+                            "dojox/charting/widget/SelectableLegend",
+                            "dojox/charting/widget/Legend",
+                            "dojo/ready"],
 
-                                    var jsonLabels = new Array(document.labels.length);
-                                    var jsonBars = new Array(document.labels.length);
+                        function (Chart2D, Columns, Wetland, Highlight, Tooltip, CubanShirts, SelectableLegend, Legend, ready) {
+                            ready(function () {
+                                var c = new dojox.charting.Chart2D("reportTotalsChartDiv");
+                                c.addPlot("default", {
+                                    type: "Columns",
+                                    tension: 1,
+                                    gap: 2
+                                });
 
-                                    var myRainBarStyle = {
-                                        stroke: {
-                                            color: "blue",
-                                            width: 1
-                                        },
-                                        fill: "lightblue"
+                                var jsonLabels = new Array(document.arguments.length);
+                                var jsonBars = new Array(document.values.length);
+
+                                var myRainBarStyle = {
+                                    stroke: {
+                                        color: "blue",
+                                        width: 1
+                                    },
+                                    fill: "lightblue"
+                                };
+
+                                for (i = 0; i < document.arguments.length; i++) {
+                                    var mylabel = {
+                                        value: i+1,
+                                        text: document.arguments[i]
                                     };
 
-                                    for (i = 0; i < document.labels.length; i++) {
-                                        var mylabel = {
-                                            value: i+1,
-                                            text: document.labels[i]
-                                        };
+                                    var myRainBar = {
+                                        y: parseInt(document.values[i]),
+                                        x: i+1,
+                                        tooltip: "Statistics for " + document.arguments[i] + ". Value: " + document.values[i],
+                                        text: "Not important"
+                                    };
 
-                                        var myRainBar = {
-                                            y: parseInt(document.rainFlow[i]),
-                                            x: i+1,
-                                            tooltip: "Rainflow statistics: " + document.labels[i],
-                                            text: "I don't know whether it is important"
-                                        };
+                                    jsonBars[i] = myRainBar;
+                                    jsonLabels[i] = mylabel;
+                                }
 
-                                        jsonBars[i] = myRainBar;
-                                        jsonLabels[i] = mylabel;
-                                    }
+                                console.log();
 
-                                    console.log();
+                                c.addSeries("series 1", jsonBars, myRainBarStyle);
 
-                                    c.addSeries("hjhjj 1", jsonBars, myRainBarStyle);
-
-                                    c.addAxis("x", {
-                                        labels: jsonLabels,
-                                        fixLower: "major",
-                                        fixUpper: "major"
-                                    });
-                                    c.addAxis("y", {
-                                        vertical: true,
-                                        fixLower: "major",
-                                        fixUpper: "major",
-                                        min: 0
-                                    });
-                                    c.setTheme(dojox.charting.themes.Wetland);
-
-                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
-                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
-                                    c.render();
+                                c.addAxis("x", {
+                                    labels: jsonLabels,
+                                    fixLower: "major",
+                                    fixUpper: "major"
                                 });
+                                c.addAxis("y", {
+                                    vertical: true,
+                                    fixLower: "major",
+                                    fixUpper: "major",
+                                    min: 0
+                                });
+                                c.setTheme(dojox.charting.themes.Wetland);
+
+                                var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+                                var a2 = new dojox.charting.action2d.Highlight(c, "default");
+                                c.render();
                             });
-                });
+                        });
+
             });
         }
 
@@ -252,60 +255,62 @@
             require(["dojo/dom", "dojo/request", "dojo/json",
                         "dojo/_base/array", "dojo/dom-construct", "dojo/domReady!"],
                     function(dom, request, JSON, array, domConstruct){
+
                         document.getElementById("Widget").innerHTML = "<div id='chartRealData' style='width:" +
                                 width + "px;" + "height: " + height + "px;" + "'></div>";
                         // Results will be displayed in resultDiv
                         var resultDiv = dom.byId("resultDiv");
 
-                        // Request the JSON data from the server
-                        request.get("test_data/tarifs.json", {
-                            // Parse data from JSON to a JavaScript object
-                            handleAs: "json"
-                        }).then(function(data){
+                        var columns = arg + ',' + func;
+                        create_chain(datasetID, columns);
 
-                                    /**
-                                     * GET SOME JSON DATA HERE FOR LINE CHART
-                                     */
-                                    document.jsonData = data;
+                        document.arguments = new Array(document.current_data.page.length);
+                        document.values = new Array(document.current_data.page.length);
 
-                                    require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas",
-                                                "dojox/charting/plot2d/Lines", "dojox/charting/plot2d/Markers", "dojox/charting/action2d/Highlight",
-                                                "dojox/charting/action2d/Tooltip",
-                                                "dojox/charting/themes/Wetland" , "dojo/ready"],
-                                            function(Chart, Default, StackedAreas, Lines, Markers, Highlight, Tooltip, Wetland, ready){
-                                                ready(function(){
-                                                    var c = new Chart("chartRealData");
-                                                    c.addPlot("default", {type: Markers, tension:3})
-                                                            .addAxis("x", {fixLower: "major", fixUpper: "major"})
-                                                            .addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})
-                                                            .setTheme(Wetland);
+                        require(["dojo/_base/array"], function(array) {
+                            /** Rest of code */
+                            array.forEach(document.current_data.page, function(pair, i) {
+                                document.arguments[i] = pair[0];
+                                document.values[i] = pair[1];
+                            });
+                        });
 
-                                                    var points = new Array(document.jsonData.length);
-                                                    /**
-                                                     * CREATE POINTS HERE LOADED FROM JSON
-                                                     */
-                                                    document.jsonData.forEach(function(item, i, arr) {
-                                                        var myPoint = {
-                                                            y: (parseFloat(item.TariffValue)),
-                                                            x: i+1,
-                                                            tooltip: "Tariff value (" + item.Region + "): " + item.TariffValue,
-                                                            text: "I dont know whether it is important"
-                                                        };
-                                                        points[i] = myPoint;
-                                                    });
+                        require(["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas",
+                                    "dojox/charting/plot2d/Lines", "dojox/charting/plot2d/Markers", "dojox/charting/action2d/Highlight",
+                                    "dojox/charting/action2d/Tooltip",
+                                    "dojox/charting/themes/Wetland" , "dojo/ready"],
+                                function(Chart, Default, StackedAreas, Lines, Markers, Highlight, Tooltip, Wetland, ready){
+                                    ready(function(){
+                                        var c = new Chart("chartRealData");
+                                        c.addPlot("default", {type: Markers, tension:3})
+                                                .addAxis("x", {fixLower: "major", fixUpper: "major"})
+                                                .addAxis("y", {vertical: true, fixLower: "major", fixUpper: "major", min: 0})
+                                                .setTheme(Wetland);
 
+                                        var points = new Array(document.arguments.length);
+                                        /**
+                                         * CREATE POINTS HERE LOADED FROM JSON
+                                         */
+                                        for (i = 0; i < document.arguments.length; i++) {
+                                            var myPoint = {
+                                                y: (parseFloat(document.values[i])),
+                                                x: i+1,
+                                                tooltip: "Statistics for " + document.arguments[i] + ". Value: " + document.values[i],
+                                                text: "I dont know whether it is important"
+                                            };
+                                            points[i] = myPoint;
+                                        }
+//                                        console.log(points);
+                                        c.addSeries("test", points);
 
-                                                    console.log(points);
-                                                    c.addSeries("test", points);
+                                        var a1 = new dojox.charting.action2d.Tooltip(c, "default");
+                                        var a2 = new dojox.charting.action2d.Highlight(c, "default");
+                                        c.render();
+                                    });
+                                });
+                    }
+            )
 
-                                                    var a1 = new dojox.charting.action2d.Tooltip(c, "default");
-                                                    var a2 = new dojox.charting.action2d.Highlight(c, "default");
-                                                    c.render();
-                                                });
-                                            });
-                                }
-                        )
-                    });
         }
 
         function renderPieChart(width, height, datasetID, func, arg) {
@@ -315,62 +320,61 @@
 
                         document.getElementById("Widget").innerHTML = "<div id='chartTwo' style='width:" +
                                 width + "px;" + "height: " + height + "px;" + "'></div>";
-                        // Results will be displayed in resultDiv
 
-                        /**
-                         * HERE DATA IS REQUESTED
-                         */
+                        var columns = arg + ',' + func;
+                        create_chain(datasetID, columns);
 
-                        request.get("test_data/tarifs.json", {
-                            // Parse data from JSON to a JavaScript object
-                            handleAs: "json"
-                        }).then(function(data) {
+                        document.arguments = new Array(document.current_data.page.length);
+                        document.values = new Array(document.current_data.page.length);
 
-                            /**
-                             * GET SOME JSON DATA HERE FOR LINE CHART
-                             */
-                            document.jsonData = data;
-
-                            require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
-                                        "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
-                                        "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/dom-construct", "dojo/domReady!", "dojo/ready"],
-                                    function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, domConstruct, domReady, ready){
-                                        ready(function(){
-
-                                            var chartTwo = new Chart("chartTwo");
-                                            chartTwo.setTheme(MiamiNice)
-                                                    .addPlot("default", {
-                                                        type: Pie,
-                                                        font: "normal normal 11pt Tahoma",
-                                                        fontColor: "black",
-                                                        labelOffset: -30,
-                                                        radius: 80
-                                                    });
-
-                                            var parts = new Array(document.jsonData.length);
-                                            /**
-                                             * CREATE PARTS HERE LOADED FROM JSON
-                                             */
-                                            document.jsonData.forEach(function(item, i, arr) {
-                                                var myPart = {
-                                                    y: (parseFloat(item.TariffValue)),
-                                                    text: item.Region,
-                                                    stroke: "black",
-                                                    tooltip: "Tariff value (" + item.Region + "): " + item.TariffValue
-                                                };
-                                                parts[i] = myPart;
-                                            });
-
-                                            chartTwo.addSeries("Series", parts);
-
-                                            var anim_a = new MoveSlice(chartTwo, "default");
-                                            var anim_b = new Highlight(chartTwo, "default");
-                                            var anim_c = new Tooltip(chartTwo, "default");
-                                            chartTwo.render();
-                                            var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
-                                        });
-                                    });
+                        require(["dojo/_base/array"], function(array) {
+                            /** Rest of code */
+                            array.forEach(document.current_data.page, function(pair, i) {
+                                document.arguments[i] = pair[0];
+                                document.values[i] = pair[1];
+                            });
                         });
+
+                        require(["dojox/charting/Chart", "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
+                                    "dojox/charting/action2d/MoveSlice" , "dojox/charting/action2d/Tooltip",
+                                    "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/dom-construct", "dojo/domReady!", "dojo/ready"],
+                                function(Chart, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, domConstruct, domReady, ready){
+                                    ready(function(){
+
+                                        var chartTwo = new Chart("chartTwo");
+                                        chartTwo.setTheme(MiamiNice)
+                                                .addPlot("default", {
+                                                    type: Pie,
+                                                    font: "normal normal 11pt Tahoma",
+                                                    fontColor: "black",
+                                                    labelOffset: -30,
+                                                    radius: 80
+                                                });
+
+                                        var parts = new Array(document.arguments.length);
+                                        /**
+                                         * CREATE PARTS HERE LOADED FROM JSON
+                                         */
+
+                                        for (i = 0; i < document.arguments.length; i++) {
+                                            var myPart = {
+                                                y: (parseFloat(document.values[i])),
+                                                text: document.arguments[i],
+                                                stroke: "black",
+                                                tooltip: "Statistics for " + document.arguments[i] + ". Value: " + document.values[i],
+                                            };
+                                            parts[i] = myPart;
+                                        }
+
+                                        chartTwo.addSeries("Series", parts);
+
+                                        var anim_a = new MoveSlice(chartTwo, "default");
+                                        var anim_b = new Highlight(chartTwo, "default");
+                                        var anim_c = new Tooltip(chartTwo, "default");
+                                        chartTwo.render();
+                                        var legendTwo = new Legend({chart: chartTwo}, "legendTwo");
+                                    });
+                                });
                     });
 
         }
