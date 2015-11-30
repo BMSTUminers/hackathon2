@@ -4,7 +4,6 @@
 
 # IntelliJ project files
 .idea
-html/bower_components
 *.iml
 out
 gen
